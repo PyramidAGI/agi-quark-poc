@@ -1,0 +1,259 @@
+plant;nature
+plant;food
+house;loc
+house;container
+headphones;channel
+headphones;tool
+headphones;transducer
+dog;animate
+dog;nature
+fear;problem
+fear;conflict
+fear;emo
+organization;organization
+organization;group
+sound;transducer
+sound;energy
+branch;pattern
+branch;group
+branch;fork
+stem;nature
+stem;support
+music;pattern
+music;sequence
+music;stat sound
+agression;conflict
+agression;dominate
+salary;transaction
+salary;reward
+clock;time
+clock;event
+bird;animate
+bird;nature
+daughter;bond
+daughter;group
+daughter;kinship
+artist;emo
+artist;pattern
+water;nature
+water;stat liquid
+computer;data
+computer;tool
+health;food
+health;activity
+health;vitality
+robot;transducer
+robot;tool
+robot;machine
+wristwatch;time
+wristwatch;sequence
+grandma;kinship
+grandma;bond
+grandma;animate
+road;transport
+road;loc
+fight;conflict
+fight;force
+sleep;time
+sleep;vitality
+explosion;expand
+explosion;energy
+microphone;stat sound
+microphone;transducer
+star;nature
+star;radiation
+sun;energy
+sun;radiation
+cloud;nature
+cloud;expand
+cloud;stat vapor
+book;container
+book;data
+football;activity
+football;loc
+lawn;nature
+lawn;loc
+president;organization
+president;group
+bottle;container
+bottle;stat liquid
+insecurity;emo
+insecurity;problem
+insecurity;conflict
+earth;nature
+earth;loc
+heat;energy
+heat;radiation
+heat;stat high
+cold;energy
+cold;stat cold
+obstacle;problem
+obstacle;solve
+train;transport
+train;loc
+electricity;energy
+electricity;transducer
+car;transport
+car;drive
+motor;energy
+motor;force
+lamp;energy
+lamp;radiation
+dirt;nature
+dirt;loc
+equipment;tool
+equipment;container
+surface;stat size
+surface;loc
+surface;shield
+product;tool
+product;val
+pressure;expand
+pressure;compress
+pressure;force
+pump;transducer
+pump;energy
+pump;stat liquid
+hose;stat liquid
+hose;channel
+cloth;nature
+cloth;pattern
+cloth;stat soft
+scratch;activity
+scratch;fix
+scratch;stat rough
+tree;nature
+tree;trunk
+sponge;nature
+sponge;stat liquid
+sponge;stat soft
+mineral;nature
+mineral;stat rough
+grasper;tool
+grasper;animate
+grasper;force
+arm;support
+arm;force
+leg;support
+leg;animate
+leg;force
+sad;emo
+sad;stat low
+battery;energy
+battery;transducer
+city;loc
+city;organization
+city;group
+leaf;nature
+leaf;vitality
+leaf;plant
+servo;drive
+servo;transducer
+servo;force
+color;pattern
+color;radiation
+light;energy
+light;radiation
+love;emo
+love;stat soft
+love;bond
+wind;nature
+wind;force
+sick leave;time
+sick leave;event
+sick leave;vitality
+needle;tool
+needle;fix
+thorn;plant
+thorn;nature
+thorn;stat rough
+drone;tool
+drone;transport
+drone;machine
+fir tree needle;plant
+fir tree needle;nature
+shrub;plant
+shrub;nature
+path;loc
+path;channel
+sick;vitality
+sick;problem
+knife;tool
+knife;fork
+wheel;transport
+wheel;tool
+radar;pattern
+radar;tool
+radar;transducer
+war;conflict
+war;dominate
+cat;animate
+cat;nature
+flower;plant
+flower;nature
+soil;nature
+soil;plant
+soil;support
+procedure;sequence
+procedure;time
+state;stat
+state;loc
+low;stat low
+high;stat high
+fast;stat fast
+slow;stat slow
+full;stat full
+empty;stat empty
+broken;stat broken
+broken;problem
+hot;stat hot
+hot;energy
+dry;stat dry
+heavy;stat heavy
+heavy;force
+database;data
+database;container
+gold;val
+gold;nature
+circumvent;solve
+circumvent;problem
+circumvent;activity
+sensor;data
+sensor;transducer
+actuator;transducer
+actuator;energy
+actuator;drive
+argument;conflict
+argument;organization
+tree root;plant
+tree root;nature
+plan;sequence
+plan;organization
+plan;waitfor
+administrator;organization
+administrator;data
+food;food
+food;plant
+drink;stat liquid
+drink;container
+drink;food
+body;container
+body;animate
+body;support
+shovel;tool
+shovel;stat rough
+shovel;force
+cap;container
+cap;support
+cap;shield
+camera;tool
+camera;transducer
+roof;container
+roof;support
+roof;shield
+wall;container
+wall;shield
+wall;support
+window;container
+window;stat clear
+window;channel
