@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Dream: Grounding, Goal, Guardrails</title>
+<style>
+  :root{
+    --lightblue:#bfe9ff;
+    --lightblue-dark:#7fc4e8;
+    --leaf-dark:#1f5c30;
+    --leaf-mid:#3f8f4f;
+    --leaf-light:#7fd18f;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;height:100%;
+    background:radial-gradient(ellipse at 50% 0%, #16324a 0%, #0a1a26 55%, #06101a 100%);
+    font-family: "Segoe UI", system-ui, sans-serif;
+    color:#eafaf0;
+    overflow:hidden;
+  }
+  header{ text-align:center; padding-top:18px; }
+  header h1{
+    margin:0; letter-spacing:.08em; font-size:1.4rem; font-weight:600;
+    color:var(--lightblue); text-shadow:0 0 12px rgba(191,233,255,.6);
+  }
+  .subtags{ margin-top:6px; }
+  .tag{
+    display:inline-block; margin:0 6px; padding:2px 12px;
+    border-radius:999px; font-size:.75rem; letter-spacing:.15em;
+    text-transform:uppercase;
+  }
+  .tag.goal{ background:#2c5f3f; color:#c9ffd6; border:1px solid #4caf6f; }
+  .tag.guardrails{ background:#173a4d; color:var(--lightblue); border:1px solid var(--lightblue-dark); }
+
+  #entityTicker{
+    text-align:center; font-size:.8rem; color:#9fd8ff; opacity:.85;
+    letter-spacing:.05em; margin-top:8px; height:18px;
+  }
+  #entityLabel{ color:#fff; font-weight:600; }
+
+  svg#scene{ display:block; margin:0 auto; max-width:100%; height:auto; }
+
+  .ground{ stroke:#2c4a3a; stroke-width:2; }
+  .groundLabel{
+    fill:#4f7a63; font-size:11px; letter-spacing:.3em; text-anchor:middle;
+  }
+  .guardrail{
+    stroke:var(--lightblue-dark); stroke-width:2; stroke-dasharray:6 6;
+    opacity:.5;
+  }
+  .branchPath{
+    stroke:#5b3a22; stroke-width:6; stroke-linecap:round; fill:none;
+    transition: stroke .5s ease, filter .5s ease;
+  }
+  .branchPath.chosen{
+    stroke:var(--lightblue); filter:drop-shadow(0 0 6px var(--lightblue));
+  }
+  .goalTag{
+    fill:#c9ffd6; font-size:11px; letter-spacing:.2em; text-anchor:middle;
+    text-transform:uppercase; opacity:.8;
+  }
+  .leaf{ transition: opacity .4s ease; }
+  #walkerGroup{ transition: transform .6s ease; }
+  .walkerDot{
+    fill:var(--lightblue); stroke:#fff; stroke-width:1.5;
+    filter:drop-shadow(0 0 5px var(--lightblue));
+  }
+
+  #flash{
+    position:fixed; inset:0; background:#fff; opacity:0; pointer-events:none;
+    z-index:20;
+  }
+  #flash.flashing{ animation:flashpop .5s ease; }
+  @keyframes flashpop{ 0%{opacity:0;} 15%{opacity:.95;} 100%{opacity:0;} }
+
+  #photoCard{
+    position:fixed; top:70px; right:24px; width:220px;
+    background:#e9f1eb; border-radius:6px; padding:10px 10px 14px;
+    box-shadow:0 10px 30px rgba(0,0,0,.5);
+    opacity:0; transform:scale(.85) rotate(4deg); transition:all .5s ease;
+    pointer-events:none; z-index:15; text-align:center;
+  }
+  #photoCard.visible{ opacity:1; transform:scale(1) rotate(-2deg); }
+  #photoCanvas{
+    width:100%; aspect-ratio:1/1;
+    clip-path: polygon(50% 4%, 4% 96%, 96% 96%);
+    background:#0a1a26;
+  }
+  .caption{ margin-top:6px; font-size:.7rem; color:#2c4a3a; letter-spacing:.08em; }
+
+  #logPanel{
+    position:fixed; left:16px; top:70px; bottom:186px; width:280px;
+    background:rgba(10,20,28,.7); border:1px solid #1f3a4a; border-radius:8px;
+    padding:8px 10px; overflow-y:auto; font-size:.68rem; line-height:1.5;
+    color:#a9e6b8;
+  }
+  .logTitle{
+    color:var(--lightblue); letter-spacing:.15em; margin-bottom:6px;
+    text-transform:uppercase; font-size:.7rem;
+  }
+  #logEntries div{ white-space:pre-wrap; word-break:break-word; opacity:.9; }
+  #logEntries div.hi{ color:#fff; }
+
+  #remote{
+    position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
+    width:190px; background:linear-gradient(180deg,var(--lightblue),var(--lightblue-dark));
+    border-radius:22px; padding:14px 12px; box-shadow:0 8px 20px rgba(0,0,0,.5), inset 0 1px 2px #fff;
+    display:grid; grid-template-columns:1fr 1fr 1fr; grid-template-rows:auto auto;
+    gap:8px; z-index:10;
+  }
+  #remote .btn{
+    background:#eaf8ff; border:1px solid #7fc4e8; border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    height:40px; font-size:1.1rem; color:#0a2f45; cursor:pointer;
+    user-select:none; box-shadow:0 2px 0 #7fc4e8;
+  }
+  #remote .btn:active{ transform:translateY(2px); box-shadow:none; }
+  #remote .btn.small{ grid-column:1/4; font-size:.7rem; letter-spacing:.1em; height:26px; }
+
+  #hint{
+    position:fixed; left:50%; bottom:156px; transform:translateX(-50%);
+    font-size:.75rem; color:#9fd8ff; opacity:.85; white-space:nowrap;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Navigating a green world remotely</h1>
+  <div class="subtags">
+    <span class="tag goal">goal</span>
+    <span class="tag guardrails">guardrails</span>
+  </div>
+</header>
+
+<div id="entityTicker">iterate over entities &mdash; <span id="entityLabel"></span></div>
+
+<svg id="scene" viewBox="0 0 800 520" width="800" height="520">
+  <g id="ambientLeaves"></g>
+
+  <line class="ground" x1="20" y1="500" x2="780" y2="500"/>
+  <text class="groundLabel" x="400" y="516">G R O U N D I N G</text>
+
+  <line class="guardrail" x1="382" y1="500" x2="382" y2="300"/>
+  <line class="guardrail" x1="418" y1="500" x2="418" y2="300"/>
+
+  <path id="trunk" class="branchPath" d="M400,500 L400,300"/>
+  <path id="leftBranch" class="branchPath" d="M400,300 L230,100"/>
+  <path id="rightBranch" class="branchPath" d="M400,300 L570,100"/>
+
+  <text class="goalTag" x="230" y="72">goal</text>
+  <text class="goalTag" x="570" y="72">goal</text>
+  <g id="leftLeaves" class="leafCluster" transform="translate(230,100)"></g>
+  <g id="rightLeaves" class="leafCluster" transform="translate(570,100)"></g>
+
+  <g id="walkerGroup" transform="translate(400,500)">
+    <circle class="walkerDot" r="9"/>
+  </g>
+</svg>
+
+<div id="hint">use &#9664; &#9654; to walk the twig, choose a fork, then press OK</div>
+
+<div id="logPanel">
+  <div class="logTitle">&#9650; log + triangles</div>
+  <div id="logEntries"></div>
+</div>
+
+<div id="photoCard">
+  <canvas id="photoCanvas"></canvas>
+  <div class="caption" id="photoCaption">flash + triangle &mdash; picture taken</div>
+</div>
+
+<div id="flash"></div>
+
+<div id="remote">
+  <div class="btn" id="btnLeft">&#9664;</div>
+  <div class="btn" id="btnSelect">OK</div>
+  <div class="btn" id="btnRight">&#9654;</div>
+  <div class="btn small" id="btnReset">reset</div>
+  <div class="btn small" id="btnNewEntry">new entry</div>
+</div>
+
+<script>
+(function(){
+  // real entity -> quark pairs, lifted from combinations.csv
+  const ENTITIES = [
+    { name:"leaf",   quarks:["nature","vitality","plant"] },
+    { name:"branch", quarks:["pattern","group","fork"] },
+    { name:"path",   quarks:["loc","channel"] },
+    { name:"tree",   quarks:["nature","trunk"] },
+    { name:"camera", quarks:["tool","transducer"] },
+  ];
+  let entityIdx = 0;
+  const entityLabel = document.getElementById("entityLabel");
+  function renderEntity(){
+    const e = ENTITIES[entityIdx % ENTITIES.length];
+    entityLabel.textContent = e.name + " → " + e.quarks.join(" + ");
+  }
+  function nextEntity(){ entityIdx++; renderEntity(); }
+  renderEntity();
+  setInterval(nextEntity, 2200);
+
+  // --- leaves ---------------------------------------------------------
+  const GREENS = ["#1f5c30", "#2e7a3f", "#3f8f4f", "#5cae68", "#7fd18f"];
+  const svgNS = "http://www.w3.org/2000/svg";
+
+  function leafPath(){
+    return "M0,-16 C9,-16 9,0 0,16 C-9,0 -9,-16 0,-16 Z";
+  }
+
+  function makeLeaf(x, y, scale, rot, color, opacity){
+    const g = document.createElementNS(svgNS, "g");
+    g.setAttribute("class", "leaf");
+    g.setAttribute("transform", `translate(${x},${y}) rotate(${rot}) scale(${scale})`);
+    g.setAttribute("opacity", opacity);
+    const p = document.createElementNS(svgNS, "path");
+    p.setAttribute("d", leafPath());
+    p.setAttribute("fill", color);
+    p.setAttribute("stroke", "#123a1e");
+    p.setAttribute("stroke-width", "0.6");
+    g.appendChild(p);
+    const vein = document.createElementNS(svgNS, "line");
+    vein.setAttribute("x1","0"); vein.setAttribute("y1","-14");
+    vein.setAttribute("x2","0"); vein.setAttribute("y2","14");
+    vein.setAttribute("stroke","#123a1e"); vein.setAttribute("stroke-width","0.6");
+    vein.setAttribute("opacity","0.5");
+    g.appendChild(vein);
+    return g;
+  }
+
+  function fillCluster(groupId, count){
+    const group = document.getElementById(groupId);
+    for(let i=0;i<count;i++){
+      const x = (Math.random()-0.5)*90;
+      const y = (Math.random()-0.5)*70;
+      const scale = 0.7 + Math.random()*0.9;
+      const rot = Math.random()*360;
+      const color = GREENS[Math.floor(Math.random()*GREENS.length)];
+      group.appendChild(makeLeaf(x,y,scale,rot,color,0.85+Math.random()*0.15));
+    }
+  }
+  fillCluster("leftLeaves", 26);
+  fillCluster("rightLeaves", 26);
+
+  const ambient = document.getElementById("ambientLeaves");
+  for(let i=0;i<40;i++){
+    const x = Math.random()*800, y = 40 + Math.random()*260;
+    const scale = 0.3 + Math.random()*0.5, rot = Math.random()*360;
+    const color = GREENS[Math.floor(Math.random()*GREENS.length)];
+    ambient.appendChild(makeLeaf(x,y,scale,rot,color,0.12+Math.random()*0.12));
+  }
+
+  // --- log panel --------------------------------------------------------
+  const logEntries = document.getElementById("logEntries");
+  function log(desc, role, type, e1, e2, rel, hi, timestamp){
+    const line = document.createElement("div");
+    if(hi) line.className = "hi";
+    const ts = timestamp ? `[${timestamp}] ` : "";
+    line.textContent = `▲ ${ts}${desc};${role};${type};${e1};${e2};${rel};;`;
+    logEntries.appendChild(line);
+    logEntries.scrollTop = logEntries.scrollHeight;
+  }
+
+  function addManualEntry(){
+    const text = window.prompt("New log entry:");
+    if(text === null) return;
+    const trimmed = text.trim();
+    if(!trimmed) return;
+    const timestamp = new Date().toLocaleTimeString();
+    log(trimmed, "c", "note", "user", "manual", "entry", true, timestamp);
+  }
+
+  // --- walk state machine ------------------------------------------------
+  const trunkPositions = [[400,500],[400,433],[400,366],[400,300]];
+  const leftPositions  = [[400,300],[343,233],[287,167],[230,100]];
+  const rightPositions = [[400,300],[457,233],[513,167],[570,100]];
+
+  const walkerGroup = document.getElementById("walkerGroup");
+  function moveWalkerTo(pos){
+    walkerGroup.style.transform = `translate(${pos[0]}px, ${pos[1]}px)`;
+  }
+
+  let phase = "trunk"; // trunk -> choosing -> branch -> arrived -> done
+  let trunkStep = 0, branchStep = 0, chosenSide = null, branchPositions = null;
+
+  log("walker rests at the twig's base", "a", "stat", "walker", "trunk", "loc");
+
+  function handleDirection(dir){
+    if(phase === "trunk"){
+      trunkStep = Math.min(trunkStep + 1, trunkPositions.length - 1);
+      moveWalkerTo(trunkPositions[trunkStep]);
+      log("climbing the twig", "a", "stat", "walker", "trunk", "pattern");
+      nextEntity();
+      if(trunkStep === trunkPositions.length - 1){
+        phase = "choosing";
+        log("twig fork reached — choose a path", "c", "activity", "walker", "fork", "fork", true);
+      }
+      return;
+    }
+    if(phase === "choosing"){
+      chosenSide = dir;
+      branchPositions = dir === "left" ? leftPositions : rightPositions;
+      document.getElementById(dir === "left" ? "leftBranch" : "rightBranch").classList.add("chosen");
+      branchStep = 0;
+      phase = "branch";
+      log(`path chosen: ${dir}`, "c", "mode", "walker", "fork", "choose_path", true);
+      return;
+    }
+    if(phase === "branch"){
+      branchStep = Math.min(branchStep + 1, branchPositions.length - 1);
+      moveWalkerTo(branchPositions[branchStep]);
+      log("following the chosen branch", "a", "stat", "walker", chosenSide, "loc");
+      nextEntity();
+      if(branchStep === branchPositions.length - 1){
+        phase = "arrived";
+        log("leaf cluster reached — press OK to take the picture", "c", "activity", "walker", "leaves", "leaf", true);
+      }
+      return;
+    }
+  }
+
+  function takePhoto(){
+    const svg = document.getElementById("scene");
+    const serializer = new XMLSerializer();
+    const svgStr = serializer.serializeToString(svg);
+    const blob = new Blob([svgStr], {type: "image/svg+xml;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = function(){
+      const canvas = document.getElementById("photoCanvas");
+      canvas.width = 400; canvas.height = 400;
+      const ctx = canvas.getContext("2d");
+      const side = chosenSide === "left" ? [30, 0] : [430, 0];
+      ctx.drawImage(img, side[0], side[1], 370, 370, 0, 0, 400, 400);
+      URL.revokeObjectURL(url);
+      document.getElementById("photoCard").classList.add("visible");
+    };
+    img.src = url;
+  }
+
+  function handleSelect(){
+    if(phase !== "arrived") return;
+    const flash = document.getElementById("flash");
+    flash.classList.remove("flashing");
+    void flash.offsetWidth; // restart animation
+    flash.classList.add("flashing");
+    setTimeout(takePhoto, 150);
+    phase = "done";
+    log(`GOAL REACHED: [bond, ${chosenSide === "left" ? "support" : "vitality"}]`, "c", "activity", "walker", "leaves", `goal bond+leaf`, true);
+  }
+
+  function reset(){
+    phase = "trunk"; trunkStep = 0; branchStep = 0; chosenSide = null; branchPositions = null;
+    moveWalkerTo(trunkPositions[0]);
+    document.getElementById("leftBranch").classList.remove("chosen");
+    document.getElementById("rightBranch").classList.remove("chosen");
+    document.getElementById("photoCard").classList.remove("visible");
+    logEntries.innerHTML = "";
+    log("seen quarks reset — walker rests at the twig's base", "a", "stat", "walker", "trunk", "loc");
+  }
+
+  document.getElementById("btnLeft").addEventListener("click", () => handleDirection("left"));
+  document.getElementById("btnRight").addEventListener("click", () => handleDirection("right"));
+  document.getElementById("btnSelect").addEventListener("click", handleSelect);
+  document.getElementById("btnReset").addEventListener("click", reset);
+  document.getElementById("btnNewEntry").addEventListener("click", addManualEntry);
+
+  document.addEventListener("keydown", (e) => {
+    if(e.key === "ArrowLeft") handleDirection("left");
+    if(e.key === "ArrowRight") handleDirection("right");
+    if(e.key === "Enter" || e.key === " ") handleSelect();
+    if(e.key === "r" || e.key === "R") reset();
+  });
+})();
+</script>
+
+</body>
+</html>
