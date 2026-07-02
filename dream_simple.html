@@ -163,7 +163,7 @@
   </g>
 </svg>
 
-<div id="hint">use &#9664; &#9654; to walk the twig and choose a fork &mdash; press OK anytime to take a picture</div>
+<div id="hint">use &#9664; &#9654; to walk the twig and choose a fork</div>
 
 <div id="logPanel">
   <div class="logTitle">&#9650; log + triangles</div>
@@ -184,24 +184,6 @@
 
 <script>
 (function(){
-  // real entity -> quark pairs, lifted from combinations.csv
-  const ENTITIES = [
-    { name:"leaf",   quarks:["nature","vitality","plant"] },
-    { name:"branch", quarks:["pattern","group","fork"] },
-    { name:"path",   quarks:["loc","channel"] },
-    { name:"tree",   quarks:["nature","trunk"] },
-    { name:"camera", quarks:["tool","transducer"] },
-  ];
-  let entityIdx = 0;
-  const entityLabel = document.getElementById("entityLabel");
-  function renderEntity(){
-    const e = ENTITIES[entityIdx % ENTITIES.length];
-    entityLabel.textContent = e.name + " → " + e.quarks.join(" + ");
-  }
-  function nextEntity(){ entityIdx++; renderEntity(); }
-  renderEntity();
-  setInterval(nextEntity, 2200);
-
   // --- leaves ---------------------------------------------------------
   const GREENS = ["#1f5c30", "#2e7a3f", "#3f8f4f", "#5cae68", "#7fd18f"];
   const svgNS = "http://www.w3.org/2000/svg";
@@ -283,7 +265,7 @@
     log(trimmed, "c", "note", "user", "manual", "entry", true, timestamp);
   }
 
-  // --- walk state machine ------------------------------------------------
+  // --- walk state machine (remote control moves the ball) ---------------
   const trunkPositions = [[400,500],[400,433],[400,366],[400,300]];
   const leftPositions  = [[400,300],[343,233],[287,167],[230,100]];
   const rightPositions = [[400,300],[457,233],[513,167],[570,100]];
@@ -295,7 +277,7 @@
     walkerGroup.style.transform = `translate(${pos[0]}px, ${pos[1]}px)`;
   }
 
-  let phase = "trunk"; // trunk -> choosing -> branch -> arrived -> done
+  let phase = "trunk"; // trunk -> choosing -> branch -> end
   let trunkStep = 0, branchStep = 0, chosenSide = null, branchPositions = null;
 
   log("walker rests at the twig's base", "a", "stat", "walker", "trunk", "loc");
@@ -305,7 +287,6 @@
       trunkStep = Math.min(trunkStep + 1, trunkPositions.length - 1);
       moveWalkerTo(trunkPositions[trunkStep]);
       log("climbing the twig", "a", "stat", "walker", "trunk", "pattern");
-      nextEntity();
       if(trunkStep === trunkPositions.length - 1){
         phase = "choosing";
         log("twig fork reached — choose a path", "c", "activity", "walker", "fork", "fork", true);
@@ -325,76 +306,11 @@
       branchStep = Math.min(branchStep + 1, branchPositions.length - 1);
       moveWalkerTo(branchPositions[branchStep]);
       log("following the chosen branch", "a", "stat", "walker", chosenSide, "loc");
-      nextEntity();
       if(branchStep === branchPositions.length - 1){
-        phase = "arrived";
-        log("leaf cluster reached — press OK to take the picture", "c", "activity", "walker", "leaves", "leaf", true);
+        phase = "end";
+        log("leaf cluster reached — end of path", "c", "activity", "walker", "leaves", "leaf", true);
       }
       return;
-    }
-  }
-
-  const FLAVOR_TEXTS = [
-    "trekking..", "searching..", "scanning..", "wandering..",
-    "sensing..", "listening..", "grounding..", "pattern-matching..",
-  ];
-  let photoCount = 0;
-
-  function takePhoto(){
-    const svg = document.getElementById("scene");
-    const serializer = new XMLSerializer();
-    const svgStr = serializer.serializeToString(svg);
-    const blob = new Blob([svgStr], {type: "image/svg+xml;charset=utf-8"});
-    const url = URL.createObjectURL(blob);
-    const img = new Image();
-    img.onload = function(){
-      photoCount++;
-      const flavor = FLAVOR_TEXTS[Math.floor(Math.random() * FLAVOR_TEXTS.length)];
-
-      const canvas = document.createElement("canvas");
-      canvas.width = 400; canvas.height = 400;
-      const ctx = canvas.getContext("2d");
-
-      // camera follows the walker: crop a window centered on its current position
-      const cropSize = 340;
-      const cx = Math.max(0, Math.min(800 - cropSize, walkerPos[0] - cropSize / 2));
-      const cy = Math.max(0, Math.min(520 - cropSize, walkerPos[1] - cropSize / 2));
-      ctx.drawImage(img, cx, cy, cropSize, cropSize, 0, 0, 400, 400);
-      URL.revokeObjectURL(url);
-
-      // burn the sequence number + flavor text into the photo itself
-      ctx.fillStyle = "rgba(10,26,38,0.6)";
-      ctx.fillRect(0, 360, 400, 40);
-      ctx.fillStyle = "#eaf8ff";
-      ctx.font = "600 20px 'Segoe UI', sans-serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(`#${photoCount}  ${flavor}`, 200, 380);
-
-      const card = document.createElement("div");
-      card.className = "photoCard";
-      card.appendChild(canvas);
-
-      const stack = document.getElementById("photoStack");
-      stack.appendChild(card);
-      requestAnimationFrame(() => card.classList.add("visible"));
-      stack.scrollTop = stack.scrollHeight;
-    };
-    img.src = url;
-  }
-
-  function handleSelect(){
-    const flash = document.getElementById("flash");
-    flash.classList.remove("flashing");
-    void flash.offsetWidth; // restart animation
-    flash.classList.add("flashing");
-    setTimeout(takePhoto, 150);
-
-    if(phase === "arrived"){
-      phase = "done";
-      log(`GOAL REACHED: [bond, ${chosenSide === "left" ? "support" : "vitality"}]`, "c", "activity", "walker", "leaves", `goal bond+leaf`, true);
-    } else {
-      log("picture taken", "c", "effect", "walker", "camera", "photo", true);
     }
   }
 
@@ -403,22 +319,18 @@
     moveWalkerTo(trunkPositions[0]);
     document.getElementById("leftBranch").classList.remove("chosen");
     document.getElementById("rightBranch").classList.remove("chosen");
-    document.getElementById("photoStack").innerHTML = "";
-    photoCount = 0;
     logEntries.innerHTML = "";
     log("seen quarks reset — walker rests at the twig's base", "a", "stat", "walker", "trunk", "loc");
   }
 
   document.getElementById("btnLeft").addEventListener("click", () => handleDirection("left"));
   document.getElementById("btnRight").addEventListener("click", () => handleDirection("right"));
-  document.getElementById("btnSelect").addEventListener("click", handleSelect);
   document.getElementById("btnReset").addEventListener("click", reset);
   document.getElementById("btnNewEntry").addEventListener("click", addManualEntry);
 
   document.addEventListener("keydown", (e) => {
     if(e.key === "ArrowLeft") handleDirection("left");
     if(e.key === "ArrowRight") handleDirection("right");
-    if(e.key === "Enter" || e.key === " ") handleSelect();
     if(e.key === "r" || e.key === "R") reset();
   });
 })();

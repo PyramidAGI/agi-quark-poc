@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Twig Robots</title>
+<style>
+  :root{ --lightblue:#bfe9ff; --lightblue-dark:#7fc4e8; }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; height:100%;
+    background:radial-gradient(ellipse at 50% 0%, #16324a 0%, #0a1a26 55%, #06101a 100%);
+    font-family:"Segoe UI", system-ui, sans-serif; color:#eafaf0;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  h1{
+    margin:18px 0 4px; letter-spacing:.08em; font-size:1.4rem; font-weight:600;
+    color:var(--lightblue); text-shadow:0 0 12px rgba(191,233,255,.6);
+  }
+  p.sub{ margin:0 0 10px; font-size:.8rem; color:#9fd8ff; opacity:.8; letter-spacing:.05em; }
+  svg#scene{ display:block; max-width:95vw; height:auto; }
+  .ground{ stroke:#2c4a3a; stroke-width:2; }
+  .jointRing{ fill:none; stroke:var(--lightblue); stroke-width:1.6; opacity:.85; }
+  button#btnRedraw{
+    margin:16px 0 24px; padding:10px 22px; border:none; border-radius:999px;
+    background:linear-gradient(180deg,var(--lightblue),var(--lightblue-dark));
+    color:#0a2f45; font-size:.85rem; font-weight:600; letter-spacing:.08em;
+    text-transform:uppercase; cursor:pointer;
+    box-shadow:0 4px 0 var(--lightblue-dark), 0 8px 16px rgba(0,0,0,.4);
+  }
+  button#btnRedraw:active{ transform:translateY(3px); box-shadow:0 1px 0 var(--lightblue-dark); }
+</style>
+</head>
+<body>
+
+<h1>Twig Robots</h1>
+<p class="sub">industrial arms grown from Y-shaped twigs &rarr; nature + machine + tool</p>
+
+<svg id="scene" viewBox="0 0 900 520" width="900" height="520">
+  <line class="ground" x1="20" y1="470" x2="880" y2="470"/>
+  <g id="robots"></g>
+</svg>
+
+<button id="btnRedraw">redraw random</button>
+
+<script>
+(function(){
+  const svgNS = "http://www.w3.org/2000/svg";
+  const BROWNS = ["#6b4423", "#7a5230", "#5b3a22", "#8a6238", "#4d3018"];
+  const GROUND_Y = 470;
+  const robotsGroup = document.getElementById("robots");
+
+  function rand(min, max){ return min + Math.random() * (max - min); }
+  function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
+
+  // organic quadratic-curve stroke between two points
+  function segmentPath(x1, y1, x2, y2, jitter){
+    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+    const dx = x2 - x1, dy = y2 - y1;
+    const len = Math.hypot(dx, dy) || 1;
+    const nx = -dy / len, ny = dx / len;
+    const bend = rand(-jitter, jitter);
+    return `M${x1},${y1} Q${mx + nx * bend},${my + ny * bend} ${x2},${y2}`;
+  }
+
+  function addSegment(group, x1, y1, x2, y2, width, color, jitter){
+    const p = document.createElementNS(svgNS, "path");
+    p.setAttribute("d", segmentPath(x1, y1, x2, y2, jitter));
+    p.setAttribute("stroke", color);
+    p.setAttribute("stroke-width", width);
+    p.setAttribute("stroke-linecap", "round");
+    p.setAttribute("fill", "none");
+    group.appendChild(p);
+  }
+
+  function addNode(group, x, y, r, color){
+    const c = document.createElementNS(svgNS, "circle");
+    c.setAttribute("cx", x); c.setAttribute("cy", y); c.setAttribute("r", r);
+    c.setAttribute("fill", color);
+    group.appendChild(c);
+  }
+
+  function addJointRing(group, x, y, r){
+    const c = document.createElementNS(svgNS, "circle");
+    c.setAttribute("cx", x); c.setAttribute("cy", y); c.setAttribute("r", r);
+    c.setAttribute("class", "jointRing");
+    group.appendChild(c);
+  }
+
+  // point at (angle from vertical-up, in degrees) and distance from (x,y)
+  function pt(x, y, angleDeg, dist){
+    const rad = angleDeg * Math.PI / 180;
+    return [x + Math.sin(rad) * dist, y - Math.cos(rad) * dist];
+  }
+
+  // one industrial arm: Y-fork tripod base, jointed twig links, Y-fork gripper
+  function buildArm(group, baseX, groundY, scale, color){
+    const mountY = groundY - 90 * scale;
+    const footSpread = 34 * scale;
+
+    // tripod base — a Y-shaped twig fork holding the mount up off the ground
+    addSegment(group, baseX, mountY, baseX - footSpread, groundY, 5 * scale, color, 6 * scale);
+    addSegment(group, baseX, mountY, baseX + footSpread, groundY, 5 * scale, color, 6 * scale);
+    addNode(group, baseX - footSpread, groundY, 3 * scale, color);
+    addNode(group, baseX + footSpread, groundY, 3 * scale, color);
+    addNode(group, baseX, mountY, 5 * scale, color);
+    addJointRing(group, baseX, mountY, 7 * scale);
+
+    // jointed arm links, bending at each joint like an articulated manipulator
+    let x = baseX, y = mountY;
+    let angle = rand(-25, 25);
+    const linkCount = 2 + Math.floor(Math.random() * 2); // 2 or 3 links
+    for(let i = 0; i < linkCount; i++){
+      const linkLen = (i === 0 ? 55 : 42) * scale * rand(0.85, 1.15);
+      angle = clamp(angle + rand(-45, 45), -80, 80);
+      const [nx, ny] = pt(x, y, angle, linkLen);
+      addSegment(group, x, y, nx, ny, (6 - i * 1.2) * scale, color, 5 * scale);
+      addNode(group, nx, ny, (4 - i * 0.6) * scale, color);
+      addJointRing(group, nx, ny, (5 - i * 0.7) * scale);
+      x = nx; y = ny;
+    }
+
+    // gripper — a Y-shaped twig fork forming a two-pronged claw
+    const gripLen = 26 * scale, gripSpread = 26;
+    const tipL = pt(x, y, angle - gripSpread, gripLen);
+    const tipR = pt(x, y, angle + gripSpread, gripLen);
+    addSegment(group, x, y, tipL[0], tipL[1], 3.2 * scale, color, 3 * scale);
+    addSegment(group, x, y, tipR[0], tipR[1], 3.2 * scale, color, 3 * scale);
+    addNode(group, tipL[0], tipL[1], 2.4 * scale, color);
+    addNode(group, tipR[0], tipR[1], 2.4 * scale, color);
+  }
+
+  function redraw(){
+    robotsGroup.innerHTML = "";
+    const count = 3 + Math.floor(Math.random() * 3); // 3..5 arms
+    const spacing = 820 / (count + 1);
+    const positions = [];
+    for(let i = 1; i <= count; i++){
+      positions.push(40 + spacing * i + rand(-20, 20));
+    }
+    positions.forEach((x) => {
+      const scale = 0.75 + Math.random() * 0.6;
+      const color = BROWNS[Math.floor(Math.random() * BROWNS.length)];
+      buildArm(robotsGroup, x, GROUND_Y, scale, color);
+    });
+  }
+
+  document.getElementById("btnRedraw").addEventListener("click", redraw);
+  redraw();
+})();
+</script>
+
+</body>
+</html>
