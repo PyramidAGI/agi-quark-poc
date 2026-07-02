@@ -11,6 +11,8 @@ LOG -> GROUNDING -> QUARKS -> TRIANGLES -> ACTIONS -> GOAL
 - `poc_runner.py` — the Python CLI runtime.
 - `log.csv` — triangle rules, goals, action effects, and grounding rules.
 - `combinations.csv` — copied from the uploaded file; maps ordinary words to quarks.
+- `mason-robot.csv` — a standalone triangle for a mason robot that builds a wall.
+- `mason_builder.html` — browser simulation that runs the mason triangle (see below).
 
 ## Run the demo
 
@@ -86,3 +88,18 @@ if tri.goal and tri.goal.issubset(self.seen[tri.name]):
 So a goal fires once every quark it names has shown up at some point since the last reset — order doesn't matter, and the quarks don't need to arrive in the same `tick`/`observe` call. Once satisfied, that triangle's `seen` set is cleared so the goal can fire again later.
 
 Because `seen` is updated for all triangles on every quark, a quark produced while satisfying one triangle's rules can also silently count toward another triangle's goal, even if that triangle's own rules never matched it.
+
+## Mason robot: `mason-robot.csv` + `mason_builder.html`
+
+`mason_builder.html` is a self-contained browser simulation that runs the mason triangle from `mason-robot.csv`. Just double-click the file to watch a mason robot lay 30 bricks (5 courses × 6) and reach `goal support+shield` at around tick 49.
+
+It mirrors the same pipeline as `poc_runner.py` (`LOG -> GROUNDING -> QUARKS -> TRIANGLES -> ACTIONS -> GOAL`):
+
+- **The CSV is the program.** On load it fetches `mason-robot.csv` (falling back to an embedded copy when opened via `file://`, where browsers block fetch) and parses the triangle's stat→mode pairs, the `c;effect` rows, the grounding rules, and the goal cluster. The left panel shows all three rule cards, and rows flash amber as they fire.
+- **Each tick**, simulated sensors (`course_fill_ratio`, `brick_offset_mm`, `mortar_moisture_%`, `wall_tilt_deg`, `wall_height_ratio`) run through the grounding rules to produce quarks; the matching triangle rule with the highest salience picks the mode; the mode animates on the SVG stage (bricks fly in, get tapped level, the wall skews when tilting and snaps plumb on `align_course`, the robot climbs scaffolding each course) and its `c;effect` rows emit quarks into the `seen` set — the same subset test as the Python runner then checks the goal.
+- The right panel is a live event log, and the bottom bar shows sensor chips, the accumulating quark set (goal quarks light up green), plus run/pause, reset, and speed controls.
+
+Two conventions in `mason-robot.csv` make it a runnable spec:
+
+- **Every goal quark needs a producer.** The goal is `support+shield`: `support` is emitted by the `align_course` effect, and `shield` is grounded by `wall_height_ratio > 0.9`. A goal quark that no grounding rule or effect can produce makes the goal unreachable.
+- **Stat-row activation numbers encode mode priority.** When several quarks fire in the same tick, the rule with the highest second activation value wins: `force` 60 > `stat rough` 55 > `stat dry` 50 > `pattern` 45 > `stat empty` 40. So the robot fixes a leaning wall or a crooked brick before laying the next one.

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mason Robot Wall Builder</title>
+<style>
+  :root{
+    --lightblue:#bfe9ff; --lightblue-dark:#7fc4e8;
+    --amber:#ffd27f; --green:#8fd89a;
+    --panel:#0d2334; --panel-edge:#1d4258;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; height:100%;
+    background:radial-gradient(ellipse at 50% 0%, #16324a 0%, #0a1a26 55%, #06101a 100%);
+    font-family:"Segoe UI", system-ui, sans-serif; color:#eafaf0;
+    overflow:hidden;
+  }
+  header{ padding:14px 22px 8px; }
+  header h1{
+    margin:0; font-size:1.25rem; font-weight:600; letter-spacing:.08em;
+    color:var(--lightblue); text-shadow:0 0 12px rgba(191,233,255,.6);
+  }
+  header p{ margin:4px 0 0; font-size:.75rem; color:#9fd8ff; opacity:.8; letter-spacing:.04em; }
+  header code{ color:var(--amber); font-size:.72rem; }
+  #layout{ display:flex; gap:14px; padding:12px 22px 18px; height:calc(100% - 64px); }
+
+  /* ---------- left panel : rules parsed from mason-robot.csv ---------- */
+  #rules{
+    width:330px; min-width:330px; overflow-y:auto; padding-right:4px;
+    display:flex; flex-direction:column; gap:12px;
+  }
+  .cluster{
+    background:var(--panel); border:1px solid var(--panel-edge); border-radius:10px;
+    padding:10px 12px;
+  }
+  .cluster h2{ margin:0; font-size:.85rem; font-weight:600; color:var(--lightblue); letter-spacing:.05em; }
+  .cluster .pair{ margin:2px 0 8px; font-size:.68rem; color:#9fd8ff; opacity:.75; }
+  .cluster ol{
+    margin:0; padding:0; list-style:none;
+    font-family:Consolas, "Cascadia Mono", monospace; font-size:.68rem; line-height:1.5;
+  }
+  .cluster ol li{
+    padding:1px 6px; border-left:2px solid transparent; border-radius:3px;
+    color:#cfe8dc; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    transition:background .3s, border-color .3s;
+  }
+  .q{ color:var(--amber); } .act{ color:var(--green); } .sens{ color:var(--lightblue); }
+  li.hl{ background:rgba(255,210,127,.16); border-left-color:var(--amber); }
+  li.done{ border-left-color:rgba(255,210,127,.45); }
+  li.goalRow{ color:var(--green); font-weight:600; }
+
+  /* ---------- stage ---------- */
+  #stage{
+    flex:1; display:flex; flex-direction:column; min-width:0;
+    background:rgba(6,16,26,.45); border:1px solid var(--panel-edge); border-radius:10px;
+    padding:8px 10px;
+  }
+  svg#scene{ flex:1; width:100%; height:100%; display:block; }
+  #sensors{ display:flex; gap:8px; flex-wrap:wrap; padding:4px 6px 2px; }
+  .chip{
+    font-family:Consolas, monospace; font-size:.66rem; padding:2px 8px; border-radius:999px;
+    border:1px solid var(--panel-edge); color:#9fd8ff; background:rgba(13,35,52,.8);
+    transition:border-color .3s, color .3s;
+  }
+  .chip.fired{ border-color:var(--amber); color:var(--amber); }
+  #status{
+    font-family:Consolas, monospace; font-size:.72rem; color:#9fd8ff;
+    padding:4px 6px 2px; min-height:22px; letter-spacing:.03em;
+  }
+  #controls{ display:flex; gap:10px; align-items:center; padding:4px 6px 4px; flex-wrap:wrap; }
+  button{
+    padding:6px 18px; border:none; border-radius:999px;
+    background:linear-gradient(180deg,var(--lightblue),var(--lightblue-dark));
+    color:#0a2f45; font-size:.72rem; font-weight:600; letter-spacing:.08em;
+    text-transform:uppercase; cursor:pointer;
+    box-shadow:0 3px 0 var(--lightblue-dark), 0 6px 12px rgba(0,0,0,.4);
+  }
+  button:active{ transform:translateY(2px); box-shadow:0 1px 0 var(--lightblue-dark); }
+  #controls label{ font-size:.68rem; color:#9fd8ff; display:flex; align-items:center; gap:6px; }
+  .lbl{ font-size:.66rem; color:#9fd8ff; }
+  #seenRow{ display:flex; gap:6px; align-items:center; flex-wrap:wrap; margin-left:auto; }
+  .qchip{
+    font-family:Consolas, monospace; font-size:.64rem; padding:1px 8px; border-radius:999px;
+    border:1px solid var(--amber); color:var(--amber);
+  }
+  .qchip.goalq{ border-color:var(--green); color:var(--green); opacity:.35; }
+  .qchip.goalq.got{ opacity:1; box-shadow:0 0 8px rgba(143,216,154,.6); }
+
+  /* ---------- right panel : event log ---------- */
+  #eventlog{
+    width:236px; min-width:236px; background:var(--panel); border:1px solid var(--panel-edge);
+    border-radius:10px; padding:10px 12px; display:flex; flex-direction:column; min-height:0;
+  }
+  #eventlog h2{ margin:0 0 6px; font-size:.8rem; color:var(--lightblue); font-weight:600; letter-spacing:.05em; }
+  #events{
+    margin:0; padding:0; list-style:none; overflow-y:auto; flex:1;
+    font-family:Consolas, monospace; font-size:.64rem; line-height:1.55; color:#cfe8dc;
+  }
+  #events li{ border-left:2px solid var(--panel-edge); padding-left:6px; margin-bottom:2px; }
+  #events li.goalEv{ border-left-color:var(--green); color:var(--green); }
+
+  /* ---------- svg pieces ---------- */
+  .ground{ stroke:#2c4a3a; stroke-width:2; }
+  .jointRing{ fill:none; stroke:var(--lightblue); stroke-width:1.6; opacity:.85; }
+  .labelWord{
+    fill:var(--lightblue); font-size:13px; font-weight:600; letter-spacing:.04em;
+    font-family:"Segoe UI", system-ui, sans-serif;
+  }
+  .labelQuarks{ fill:var(--amber); font-size:11px; font-family:Consolas, monospace; }
+  .labelGoal{ fill:var(--green); font-weight:600; }
+  .small{ fill:#9fd8ff; font-size:10px; font-family:Consolas, monospace; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Mason Robot &mdash; Wall Builder</h1>
+  <p>runs the triangle in <code>mason-robot.csv</code>: sensors &rarr; grounding rules &rarr; quarks &rarr; modes &rarr; effects &rarr; <code>goal support+shield</code></p>
+</header>
+
+<div id="layout">
+  <div id="rules"></div>
+
+  <div id="stage">
+    <svg id="scene" viewBox="0 0 780 560" preserveAspectRatio="xMidYMid meet"
+         role="img" aria-label="Mason robot building a brick wall driven by quark rules">
+      <defs>
+        <clipPath id="wallClip"><rect x="408" y="348" width="300" height="160"/></clipPath>
+      </defs>
+      <line class="ground" x1="30" y1="505" x2="750" y2="505"/>
+      <rect x="408" y="364" width="300" height="141" fill="none" stroke="#1d4258" stroke-dasharray="5 5"/>
+      <text class="small" x="558" y="358" text-anchor="middle">wall001 &mdash; goal: support + shield</text>
+      <g id="scaffold"></g>
+      <g id="wall" clip-path="url(#wallClip)"></g>
+      <g id="robot"></g>
+      <g id="banner" opacity="0">
+        <text class="labelWord labelGoal" x="558" y="322" text-anchor="middle">GOAL REACHED &mdash; support + shield</text>
+        <text class="labelQuarks" x="558" y="338" text-anchor="middle" id="bannerDesc"></text>
+      </g>
+    </svg>
+    <div id="sensors"></div>
+    <div id="status">&nbsp;</div>
+    <div id="controls">
+      <button id="btnRun">pause</button>
+      <button id="btnReset">reset</button>
+      <label>speed <input id="speed" type="range" min="0.5" max="3" step="0.5" value="1"></label>
+      <span class="lbl" id="csvsrc"></span>
+      <div id="seenRow"><span class="lbl">quarks seen:</span></div>
+    </div>
+  </div>
+
+  <div id="eventlog">
+    <h2>event log</h2>
+    <ol id="events"></ol>
+  </div>
+</div>
+
+<!-- embedded copy of mason-robot.csv, used as fallback when fetch() is
+     blocked (e.g. when this file is opened directly via file://) -->
+<script type="text/csv" id="csvFallback">
+;;;;;;;;
+mason triangle — build a stable wall;c;activity;robot;wall;;60;50;
+;;;;;;;;
+gap in course detected;a;stat;mason001;wall001;stat empty;30;40;
+;c;mode;mason001;wall001;place_brick;35;45;
+;;;;;;;;
+brick surface unaligned;a;stat;mason001;wall001;stat rough;45;55;
+;c;mode;mason001;wall001;tap_level;45;55;
+;;;;;;;;
+mortar too dry;a;stat;mason001;wall001;stat dry;40;50;
+;c;mode;mason001;wall001;wet_mortar;30;40;
+;;;;;;;;
+wall leaning sideways;a;stat;mason001;wall001;force;50;60;
+;c;mode;mason001;wall001;align_course;55;65;
+;;;;;;;;
+course complete and level;a;stat;mason001;wall001;pattern;35;45;
+;c;mode;mason001;wall001;start_next_course;50;60;
+;;;;;;;;
+wall finished, solid and sheltering;c;activity;robot;wall;goal support+shield;80;90;
+;;;;;;;;
+action effects;;;;;;;;
+;;;;;;;;
+place brick fills the gap;c;effect;place_brick;mason001;stat full;0;0;
+tap level restores the pattern;c;effect;tap_level;mason001;pattern;0;0;
+wet mortar makes it workable;c;effect;wet_mortar;mason001;stat liquid;0;0;
+apply mortar creates bond;c;effect;apply_mortar;mason001;bond;0;0;
+align course restores support;c;effect;align_course;mason001;support;0;0;
+;;;;;;;;
+grounding rules;;;;;;;;
+;;;;;;;;
+gap in course;i;lt;course_fill_ratio;0-1;stat empty;1.0;1.0;
+brick misaligned;i;gt;brick_offset_mm;mm;stat rough;2;5;
+mortar drying out;i;lt;mortar_moisture_%;%;stat dry;40;15;
+wall tilting;i;gt;wall_tilt_deg;deg;force;0.5;2.0;
+course complete;i;gt;course_fill_ratio;0-1;pattern;0.5;0.99;
+wall at target height;i;gt;wall_height_ratio;0-1;stat full;0.5;0.95;
+wall high enough to shelter;i;gt;wall_height_ratio;0-1;shield;0.5;0.9;
+;;;;;;;;
+</script>
+
+<script>
+(function(){
+"use strict";
+const svgNS = "http://www.w3.org/2000/svg";
+const COURSES=5, PER=6, BRICK_W=46, BRICK_H=24, GAP_X=4, GAP_Y=4;
+const X0=410, BASE_Y=505, COURSE_H=BRICK_H+GAP_Y;
+const TICK_MS=750;
+
+const $ = id => document.getElementById(id);
+const wallG=$("wall"), robotG=$("robot"), scaffoldG=$("scaffold");
+let G=null, sim=null, rng=null, armG=null, mortarRect=null;
+let timer=null, running=true, done=false;
+
+/* deterministic PRNG so every run builds the same wall */
+function mulberry32(seed){
+  return function(){
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+function el(name, attrs, parent){
+  const e = document.createElementNS(svgNS, name);
+  for(const k in attrs) e.setAttribute(k, attrs[k]);
+  parent.appendChild(e);
+  return e;
+}
+
+/* ================================================================
+   PARSE mason-robot.csv
+   description ; role ; type/operator ; e1 ; e2 ; relation/quark/action ; v1 ; v2
+   ================================================================ */
+function parseCSV(text){
+  const g = {name:"", pair:"", goal:[], goalDesc:"", rules:[], effects:[], grounding:[]};
+  let pending = null;
+  for(const raw of text.split(/\r?\n/)){
+    const f = raw.split(";");
+    if(f.length < 6) continue;
+    const [desc, role, type, e1, e2, rel] = f;
+    if(!role){ pending = null; continue; }              /* separator / section rows */
+    if(role==="c" && type==="activity"){
+      if(rel && rel.startsWith("goal ")){
+        g.goal = rel.slice(5).split("+").map(s=>s.trim());
+        g.goalDesc = desc;
+      } else { g.name = desc; g.pair = e1+" × "+e2; }
+    } else if(role==="a" && type==="stat"){
+      pending = {desc, quark:rel, salience:+f[7]||0};
+    } else if(role==="c" && type==="mode" && pending){
+      g.rules.push(Object.assign({action:rel}, pending)); pending = null;
+    } else if(role==="c" && type==="effect"){
+      g.effects.push({desc, action:e1, quark:rel});
+    } else if(role==="i" && (type==="lt" || type==="gt")){
+      g.grounding.push({desc, op:type, sensor:e1, unit:e2, quark:rel,
+                        baseline:+f[6], threshold:+f[7]});
+    }
+  }
+  return g;
+}
+
+/* ================================================================
+   LEFT PANEL — render the parsed rules
+   ================================================================ */
+function makeCard(title, sub){
+  const card = document.createElement("div");
+  card.className = "cluster";
+  card.innerHTML = `<h2>${title}</h2>` + (sub ? `<div class="pair">${sub}</div>` : "");
+  const ol = document.createElement("ol");
+  card.appendChild(ol);
+  $("rules").appendChild(card);
+  return ol;
+}
+
+function renderRules(){
+  const olT = makeCard(G.name || "triangle", "triangle: " + G.pair);
+  G.rules.forEach(r => {
+    const li = document.createElement("li");
+    li.title = r.desc;
+    li.innerHTML = `<span class="q">${r.quark}</span> → <span class="act">${r.action}</span> <span style="opacity:.55">· ${r.desc}</span>`;
+    olT.appendChild(li); r.el = li;
+  });
+  const gl = document.createElement("li");
+  gl.className = "goalRow";
+  gl.innerHTML = `GOAL <span class="q">${G.goal.join(" + ")}</span> · ${G.goalDesc}`;
+  olT.appendChild(gl); G.goalEl = gl;
+
+  const olE = makeCard("action effects", "printed actions emit quarks");
+  G.effects.forEach(e => {
+    const li = document.createElement("li");
+    li.title = e.desc;
+    li.innerHTML = `<span class="act">${e.action}</span> ⇒ <span class="q">${e.quark}</span>`;
+    olE.appendChild(li); e.el = li;
+  });
+
+  const olG = makeCard("grounding rules", "sensor values → quarks");
+  G.grounding.forEach(g => {
+    const li = document.createElement("li");
+    li.title = g.desc;
+    li.innerHTML = `<span class="sens">${g.sensor}</span> ${g.op==="lt"?"&lt;":"&gt;"} ${g.threshold} → <span class="q">${g.quark}</span>`;
+    olG.appendChild(li); g.el = li;
+  });
+}
+
+const SENSOR_ORDER = ["course_fill_ratio","brick_offset_mm","mortar_moisture_%","wall_tilt_deg","wall_height_ratio"];
+function renderSensors(){
+  SENSOR_ORDER.forEach(n => {
+    const d = document.createElement("div");
+    d.className = "chip"; d.id = "sens_"+n;
+    $("sensors").appendChild(d);
+  });
+}
+function updateSensors(s, firedSensors){
+  SENSOR_ORDER.forEach(n => {
+    const d = $("sens_"+n);
+    d.textContent = `${n} = ${s[n]}`;
+    d.classList.toggle("fired", firedSensors.has(n));
+  });
+}
+
+function renderSeenRow(){
+  G.goal.forEach(q => {
+    const c = document.createElement("span");
+    c.className = "qchip goalq"; c.textContent = q; c.dataset.q = q;
+    $("seenRow").appendChild(c);
+  });
+}
+function addSeen(q){
+  if(sim.seen.has(q)) return;
+  sim.seen.add(q);
+  const goalChip = [...document.querySelectorAll(".qchip.goalq")].find(c => c.dataset.q === q);
+  if(goalChip) goalChip.classList.add("got");
+  else {
+    const c = document.createElement("span");
+    c.className = "qchip"; c.textContent = q;
+    $("seenRow").appendChild(c);
+  }
+}
+
+function flash(el){
+  if(!el) return;
+  el.classList.remove("hl"); void el.offsetWidth;
+  el.classList.add("hl");
+  setTimeout(() => { el.classList.remove("hl"); el.classList.add("done"); }, 650);
+}
+
+function status(html){ $("status").innerHTML = html; }
+function logEv(html, goal){
+  const li = document.createElement("li");
+  li.innerHTML = html;
+  if(goal) li.classList.add("goalEv");
+  const ol = $("events");
+  ol.insertBefore(li, ol.firstChild);
+  while(ol.children.length > 250) ol.removeChild(ol.lastChild);
+}
+
+/* ================================================================
+   SCENE — robot, scaffold, bricks
+   ================================================================ */
+function buildRobot(){
+  robotG.innerHTML = "";
+  robotG.style.transition = "transform .7s ease";
+  robotG.style.transform = "translateY(0px)";
+  const C = "#6b4a33";
+  el("path",{d:"M350,468 L338,505 M350,468 L362,505",stroke:C,"stroke-width":5,"stroke-linecap":"round",fill:"none"},robotG);
+  el("path",{d:"M350,468 L350,432",stroke:C,"stroke-width":7,"stroke-linecap":"round"},robotG);
+  el("circle",{cx:350,cy:421,r:8,fill:C},robotG);
+  el("circle",{cx:350,cy:421,r:11,class:"jointRing"},robotG);
+  el("circle",{cx:355,cy:419,r:2,fill:"#bfe9ff"},robotG);
+  armG = el("g",{},robotG);
+  armG.style.transformOrigin = "350px 444px";
+  armG.style.transition = "transform .3s ease";
+  el("path",{d:"M350,444 L376,433 L400,441",stroke:C,"stroke-width":4.5,"stroke-linecap":"round",fill:"none"},armG);
+  el("polygon",{points:"400,437 416,441 400,446",fill:"#9fd8ff"},armG);
+  el("circle",{cx:350,cy:444,r:5.5,class:"jointRing"},robotG);
+  /* mortar bucket */
+  el("path",{d:"M308,505 L332,505 L329,488 L311,488 Z",fill:"#0d2334",stroke:"#7fc4e8","stroke-width":1.5},robotG);
+  mortarRect = el("rect",{x:313,y:503,width:14,height:0,fill:"#aab6ad"},robotG);
+  const t = el("text",{x:350,y:523,"text-anchor":"middle",class:"small"},robotG);
+  t.textContent = "mason001";
+  updateBucket();
+}
+function updateBucket(){
+  const h = Math.max(0, 13 * sim.moisture / 40);
+  mortarRect.setAttribute("height", h);
+  mortarRect.setAttribute("y", 503 - h);
+}
+function swingArm(){
+  armG.style.transform = "rotate(14deg)";
+  setTimeout(() => armG.style.transform = "rotate(0deg)", 300);
+}
+function drawScaffold(lvl){
+  scaffoldG.innerHTML = "";
+  if(lvl <= 0) return;
+  const y = BASE_Y - lvl*COURSE_H;
+  el("line",{x1:294,y1:y,x2:404,y2:y,stroke:"#1d4258","stroke-width":4},scaffoldG);
+  el("line",{x1:300,y1:y,x2:300,y2:BASE_Y,stroke:"#1d4258","stroke-width":2.5},scaffoldG);
+  el("line",{x1:398,y1:y,x2:398,y2:BASE_Y,stroke:"#1d4258","stroke-width":2.5},scaffoldG);
+  el("line",{x1:300,y1:BASE_Y,x2:398,y2:y,stroke:"#1d4258","stroke-width":1.5},scaffoldG);
+}
+function updateTilt(){
+  wallG.style.transform = `skewX(${(-sim.tilt*1.5).toFixed(2)}deg)`;
+}
+function addBrickVisual(course, col, offset){
+  const odd = course % 2 === 1;
+  const x = X0 + col*(BRICK_W+GAP_X) - (odd ? BRICK_W/2+GAP_X/2 : 0);
+  const y = BASE_Y - course*COURSE_H - BRICK_H;
+  const l = 32 + Math.floor(rng()*8);
+  const fill = `hsl(13,45%,${l}%)`;
+  const b = el("rect",{x, y, width:BRICK_W, height:BRICK_H, rx:2,
+                       fill, stroke:"#d9906a","stroke-width":1}, wallG);
+  b.style.transformBox = "fill-box";
+  b.style.transformOrigin = "center";
+  b.style.opacity = 0;
+  b.style.transform = "translate(-80px,-46px) rotate(-9deg)";
+  b.getBoundingClientRect();
+  b.style.transition = "transform .5s cubic-bezier(.2,1.2,.4,1), opacity .3s";
+  b.style.opacity = 1;
+  b.style.transform = offset > 5 ? `rotate(${(offset*0.8).toFixed(1)}deg)` : "rotate(0deg)";
+  sim.lastBrickEl = b;
+  /* running bond: odd courses get a closing half-brick at the right end */
+  if(odd && col === PER-1){
+    el("rect",{x:X0 + PER*(BRICK_W+GAP_X) - (BRICK_W/2+GAP_X/2), y,
+               width:BRICK_W/2-2, height:BRICK_H, rx:2,
+               fill, stroke:"#d9906a","stroke-width":1}, wallG);
+  }
+}
+
+/* ================================================================
+   ACTIONS (the triangle's modes)
+   ================================================================ */
+function emit(action){
+  G.effects.filter(e => e.action === action).forEach(e => {
+    addSeen(e.quark); flash(e.el);
+    logEv(`t${sim.t} <span class="act">${action}</span> ⇒ <span class="q">${e.quark}</span>`);
+  });
+}
+
+function execute(rule){
+  swingArm();
+  let note = "";
+  switch(rule.action){
+    case "place_brick": {
+      emit("apply_mortar");                 /* placing a brick implicitly applies mortar first */
+      sim.moisture = Math.max(0, sim.moisture - 3); updateBucket();
+      const rough = rng() < 0.3;
+      sim.lastOffset = rough ? 5.5 + rng()*2.5 : rng()*1.8;
+      addBrickVisual(sim.course, sim.fill, sim.lastOffset);
+      sim.fill++;
+      sim.tilt += 0.12 + rng()*0.38; updateTilt();
+      note = `brick ${sim.fill}/${PER} on course ${sim.course+1}`;
+      emit("place_brick");
+      break;
+    }
+    case "tap_level":
+      if(sim.lastBrickEl) sim.lastBrickEl.style.transform = "rotate(0deg)";
+      sim.lastOffset = 0.4;
+      note = "brick tapped level";
+      emit("tap_level");
+      break;
+    case "wet_mortar": {
+      for(let i=0;i<3;i++){
+        const c = el("circle",{cx:314+i*6, cy:468, r:2.4, fill:"#bfe9ff"}, robotG);
+        c.style.transition = `transform ${350+i*130}ms ease-in, opacity .45s ease-in`;
+        requestAnimationFrame(() => { c.style.transform = "translateY(26px)"; c.style.opacity = 0; });
+        setTimeout(() => c.remove(), 900);
+      }
+      sim.moisture = 40; updateBucket();
+      note = "mortar rewetted";
+      emit("wet_mortar");
+      break;
+    }
+    case "align_course":
+      sim.tilt = 0.2; updateTilt();
+      note = "wall pulled plumb";
+      emit("align_course");
+      break;
+    case "start_next_course":
+      if(sim.course >= COURSES){ note = "wall already complete"; break; }
+      sim.course++; sim.fill = 0; sim.lastOffset = 0.4;
+      const lvl = Math.min(sim.course, COURSES-1);
+      drawScaffold(lvl);
+      robotG.style.transform = `translateY(${-lvl*COURSE_H}px)`;
+      note = `climbing to course ${sim.course+1}`;
+      emit("start_next_course");
+      break;
+  }
+  status(`t=${sim.t} · <span class="q">${rule.quark}</span> → <span class="act">${rule.action}</span> · ${note}`);
+  logEv(`t${sim.t} <span class="q">${rule.quark}</span> → <span class="act">${rule.action}</span>`);
+}
+
+/* ================================================================
+   SIMULATION TICK: sensors → grounding → quarks → goal → mode
+   ================================================================ */
+function sensors(){
+  return {
+    "course_fill_ratio": sim.course >= COURSES ? 1 : +(sim.fill/PER).toFixed(2),
+    "brick_offset_mm":   +sim.lastOffset.toFixed(1),
+    "mortar_moisture_%": sim.moisture,
+    "wall_tilt_deg":     +sim.tilt.toFixed(2),
+    "wall_height_ratio": +(sim.course/COURSES).toFixed(2)
+  };
+}
+
+function tick(){
+  sim.t++;
+  sim.moisture = Math.max(0, sim.moisture - 1); updateBucket();
+  const s = sensors();
+
+  const fired = [];
+  for(const g of G.grounding){
+    const v = s[g.sensor];
+    if(v === undefined) continue;
+    if(g.op === "lt" ? v < g.threshold : v > g.threshold){
+      fired.push(g); addSeen(g.quark); flash(g.el);
+      logEv(`t${sim.t} <span class="sens">${g.sensor}</span>=${v} → <span class="q">${g.quark}</span>`);
+    }
+  }
+  updateSensors(s, new Set(fired.map(f => f.sensor)));
+
+  if(G.goal.length && G.goal.every(q => sim.seen.has(q))){ finish(); return; }
+
+  const firedQ = new Set(fired.map(f => f.quark));
+  let best = null;
+  for(const r of G.rules)
+    if(firedQ.has(r.quark) && (!best || r.salience > best.salience)) best = r;
+  if(best){ flash(best.el); execute(best); }
+  else status(`t=${sim.t} · nothing to do`);
+}
+
+function finish(){
+  done = true;
+  $("banner").style.transition = "opacity .8s ease";
+  $("banner").style.opacity = 1;
+  $("bannerDesc").textContent = G.goalDesc;
+  flash(G.goalEl); G.goalEl.classList.add("hl");
+  status(`<span style="color:var(--green);font-weight:600">GOAL REACHED: ${G.goal.join(" + ")}</span> — ${G.goalDesc}`);
+  logEv(`t${sim.t} GOAL ${G.goal.join(" + ")}`, true);
+  $("btnRun").textContent = "done";
+}
+
+/* ================================================================
+   RUN LOOP + CONTROLS
+   ================================================================ */
+function schedule(){
+  clearTimeout(timer);
+  if(!running || done) return;
+  timer = setTimeout(() => { tick(); schedule(); }, TICK_MS / parseFloat($("speed").value));
+}
+
+function reset(){
+  clearTimeout(timer);
+  sim = {t:0, course:0, fill:0, moisture:40, tilt:0.2, lastOffset:0.4, lastBrickEl:null, seen:new Set()};
+  rng = mulberry32(20260703);
+  wallG.innerHTML = "";
+  wallG.style.transformOrigin = "558px 505px";
+  wallG.style.transition = "transform .6s ease";
+  wallG.style.transform = "skewX(0deg)";
+  scaffoldG.innerHTML = "";
+  buildRobot();
+  $("banner").style.transition = "none";
+  $("banner").style.opacity = 0;
+  $("events").innerHTML = "";
+  document.querySelectorAll("#rules li").forEach(li => li.classList.remove("hl","done"));
+  document.querySelectorAll("#seenRow .qchip").forEach(c => {
+    if(c.classList.contains("goalq")) c.classList.remove("got"); else c.remove();
+  });
+  done = false; running = true; $("btnRun").textContent = "pause";
+  status("t=0 · mason001 ready — wall001 empty");
+  updateSensors(sensors(), new Set());
+  schedule();
+}
+
+$("btnRun").addEventListener("click", () => {
+  if(done) return;
+  running = !running;
+  $("btnRun").textContent = running ? "pause" : "run";
+  schedule();
+});
+$("btnReset").addEventListener("click", reset);
+
+/* ================================================================
+   BOOT — prefer the real mason-robot.csv, fall back to embedded copy
+   ================================================================ */
+function boot(text, src){
+  G = parseCSV(text);
+  $("csvsrc").textContent = "rules: " + src;
+  renderRules(); renderSensors(); renderSeenRow();
+  reset();
+}
+fetch("mason-robot.csv")
+  .then(r => r.ok ? r.text() : Promise.reject())
+  .then(t => boot(t, "mason-robot.csv (live)"))
+  .catch(() => boot($("csvFallback").textContent, "embedded copy of mason-robot.csv"));
+})();
+</script>
+
+</body>
+</html>
