@@ -13,6 +13,7 @@ LOG -> GROUNDING -> QUARKS -> TRIANGLES -> ACTIONS -> GOAL
 - `combinations.csv` — copied from the uploaded file; maps ordinary words to quarks.
 - `mason-robot.csv` — a standalone triangle for a mason robot that builds a wall.
 - `mason_builder.html` — browser simulation that runs the mason triangle (see below).
+- `README-quark-turing.md` — design notes: a Turing machine over the quarks, why the current pipeline is not Turing complete, and three use cases for a quark tape.
 
 ## Run the demo
 
