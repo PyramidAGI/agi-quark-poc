@@ -1,0 +1,53 @@
+{
+  "name": "BdR",
+  "goal": "",
+  "sensor": "",
+  "actuator": "",
+  "control": "",
+  "plan": "",
+  "navigate": "",
+  "children": [
+    {
+      "name": "salesreports",
+      "goal": "",
+      "sensor": "",
+      "actuator": "",
+      "control": "",
+      "plan": "",
+      "navigate": "",
+      "children": [
+        {
+          "name": "findqueries",
+          "goal": "",
+          "sensor": "",
+          "actuator": "",
+          "control": "",
+          "plan": "",
+          "navigate": "",
+          "children": [
+            {
+              "name": "businesscentral",
+              "goal": "",
+              "sensor": "",
+              "actuator": "",
+              "control": "",
+              "plan": "",
+              "navigate": "",
+              "children": []
+            },
+            {
+              "name": "login",
+              "goal": "",
+              "sensor": "gebruikersnaam",
+              "actuator": "",
+              "control": "",
+              "plan": "",
+              "navigate": "",
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
