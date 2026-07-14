@@ -76,6 +76,20 @@ saved mason.json
   tree) and reloads automatically when the program is started with the
   same project name. Ctrl+C also saves before exiting, so a tree cannot
   be lost by accident.
-- The JSON format is deliberately simple, so a later step — feeding the
-  tree into the quark/triangle runtime, or drawing real triangles in an
-  HTML view like `mason_builder.html` — can read it directly.
+- The JSON format is deliberately simple, so other tools can read it
+  directly — `triangle_viewer.html` draws any saved tree as SVG triangles
+  in the browser, and a later step could feed the tree into the
+  quark/triangle runtime.
+
+## Viewing a tree: `triangle_viewer.html`
+
+Open `triangle_viewer.html` in the browser, enter the tree name (e.g.
+`BdR`) and press Load — it fetches `<name>.json` from the same folder and
+draws it: one SVG triangle per node with `G` at the apex and `S`/`A` at the
+base corners, a badge showing how many of the six fields are filled, and
+parent-to-child lines giving the fan-out picture. Clicking a triangle shows
+all its fields in the side panel.
+
+Note: fetching by name works when the page is served over HTTP (e.g.
+`python -m http.server`). Opened via `file://` (double-click), browsers
+block fetch — use the file picker next to the Load button instead.

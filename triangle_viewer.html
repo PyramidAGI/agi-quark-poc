@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Triangle Tree Viewer</title>
+<style>
+  :root {
+    --bg: #f7f8fa; --panel: #ffffff; --ink: #1c2330; --muted: #6b7686;
+    --line: #94a0b4; --tri: #ffffff; --tri-edge: #33415e; --accent: #2563eb;
+    --sel: #dbeafe;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font: 15px/1.5 system-ui, "Segoe UI", sans-serif;
+    background: var(--bg); color: var(--ink);
+  }
+  header {
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    padding: 12px 16px; background: var(--panel);
+    border-bottom: 1px solid #e3e7ee;
+  }
+  header h1 { font-size: 17px; margin: 0 12px 0 0; }
+  input[type=text] {
+    padding: 7px 10px; border: 1px solid #c9d2e0; border-radius: 6px;
+    font: inherit; width: 200px;
+  }
+  button {
+    padding: 7px 14px; border: 0; border-radius: 6px; font: inherit;
+    background: var(--accent); color: #fff; cursor: pointer;
+  }
+  button:hover { filter: brightness(1.1); }
+  #msg { color: var(--muted); font-size: 13px; }
+  #msg.err { color: #b91c1c; }
+  main { display: flex; height: calc(100vh - 61px); }
+  #stagewrap { flex: 1; overflow: auto; }
+  svg { display: block; }
+  aside {
+    width: 300px; background: var(--panel); border-left: 1px solid #e3e7ee;
+    padding: 16px; overflow: auto;
+  }
+  aside h2 { font-size: 15px; margin: 0 0 10px; }
+  aside .hint { color: var(--muted); font-size: 13px; }
+  dl { margin: 0; }
+  dt { font-size: 11px; text-transform: uppercase; letter-spacing: .06em;
+       color: var(--muted); margin-top: 10px; }
+  dd { margin: 2px 0 0; min-height: 1.2em; }
+  dd:empty::after { content: "\2014"; color: #c2c9d4; }
+  .tri { fill: var(--tri); stroke: var(--tri-edge); stroke-width: 1.6; cursor: pointer; }
+  .tri.sel { fill: var(--sel); stroke: var(--accent); stroke-width: 2.2; }
+  .edge { stroke: var(--line); stroke-width: 1.3; }
+  .nodename { font-size: 13px; font-weight: 600; text-anchor: middle; cursor: pointer; }
+  .corner { font-size: 9px; fill: var(--muted); text-anchor: middle; pointer-events: none; }
+  .badge { font-size: 9px; fill: var(--accent); text-anchor: middle; pointer-events: none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Triangle Tree Viewer</h1>
+  <input type="text" id="name" placeholder="tree name, e.g. BdR">
+  <button id="load">Load</button>
+  <span>or</span>
+  <input type="file" id="file" accept=".json">
+  <span id="msg">shows trees saved by triangle_tree.py (&lt;name&gt;.json)</span>
+</header>
+<main>
+  <div id="stagewrap"><svg id="stage"></svg></div>
+  <aside id="panel">
+    <h2>Triangle details</h2>
+    <div class="hint">Load a tree, then click a triangle.</div>
+  </aside>
+</main>
+<script>
+"use strict";
+const FIELDS = ["goal", "sensor", "actuator", "control", "plan", "navigate"];
+const TRI_W = 96, TRI_H = 74, GAP_X = 28, GAP_Y = 64, PAD = 40;
+const svg = document.getElementById("stage");
+const msg = document.getElementById("msg");
+let selected = null;
+
+function say(text, err) {
+  msg.textContent = text;
+  msg.className = err ? "err" : "";
+}
+
+/* ---- layout: leaves get a slot, parents center over their children ---- */
+function layout(node, depth, cursor) {
+  node.depth = depth;
+  if (!node.children || node.children.length === 0) {
+    node.x = cursor.x + TRI_W / 2;
+    cursor.x += TRI_W + GAP_X;
+  } else {
+    for (const c of node.children) layout(c, depth + 1, cursor);
+    const xs = node.children.map(c => c.x);
+    node.x = (Math.min(...xs) + Math.max(...xs)) / 2;
+  }
+  node.y = PAD + depth * (TRI_H + GAP_Y);
+  cursor.maxDepth = Math.max(cursor.maxDepth, depth);
+}
+
+function el(tag, attrs, text) {
+  const e = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+
+function drawNode(node) {
+  const x = node.x, y = node.y;
+  const apex = [x, y], bl = [x - TRI_W / 2, y + TRI_H], br = [x + TRI_W / 2, y + TRI_H];
+  // edges to children first, so triangles draw on top
+  for (const c of (node.children || [])) {
+    svg.appendChild(el("line", { class: "edge",
+      x1: x, y1: y + TRI_H, x2: c.x, y2: c.y }));
+    drawNode(c);
+  }
+  const tri = el("polygon", { class: "tri",
+    points: `${apex} ${bl} ${br}` });
+  tri.addEventListener("click", () => select(node, tri));
+  svg.appendChild(tri);
+  svg.appendChild(el("text", { class: "corner", x: x, y: y - 5 }, "G"));
+  svg.appendChild(el("text", { class: "corner", x: bl[0], y: bl[1] + 11 }, "S"));
+  svg.appendChild(el("text", { class: "corner", x: br[0], y: br[1] + 11 }, "A"));
+  const name = el("text", { class: "nodename", x: x, y: y + TRI_H - 24 }, node.name);
+  name.addEventListener("click", () => select(node, tri));
+  svg.appendChild(name);
+  const filled = FIELDS.filter(f => node[f]).length;
+  svg.appendChild(el("text", { class: "badge", x: x, y: y + TRI_H - 9 },
+    `${filled}/${FIELDS.length}`));
+}
+
+function select(node, tri) {
+  if (selected) selected.classList.remove("sel");
+  selected = tri;
+  tri.classList.add("sel");
+  const panel = document.getElementById("panel");
+  panel.innerHTML = "<h2></h2><dl></dl>";
+  panel.querySelector("h2").textContent = "△ " + node.name;
+  const dl = panel.querySelector("dl");
+  for (const f of FIELDS) {
+    const dt = document.createElement("dt"); dt.textContent = f;
+    const dd = document.createElement("dd"); dd.textContent = node[f] || "";
+    dl.append(dt, dd);
+  }
+  const dt = document.createElement("dt"); dt.textContent = "children";
+  const dd = document.createElement("dd");
+  dd.textContent = (node.children || []).map(c => c.name).join(", ");
+  dl.append(dt, dd);
+}
+
+function render(root) {
+  svg.innerHTML = "";
+  selected = null;
+  const cursor = { x: PAD, maxDepth: 0 };
+  layout(root, 0, cursor);
+  svg.setAttribute("width", cursor.x - GAP_X + PAD);
+  svg.setAttribute("height", PAD + (cursor.maxDepth + 1) * (TRI_H + GAP_Y));
+  drawNode(root);
+  say(`tree '${root.name}' — ${count(root)} triangles`);
+  document.getElementById("panel").innerHTML =
+    "<h2>Triangle details</h2><div class='hint'>Click a triangle.</div>";
+}
+
+function count(n) {
+  return 1 + (n.children || []).reduce((s, c) => s + count(c), 0);
+}
+
+async function loadByName() {
+  const name = document.getElementById("name").value.trim();
+  if (!name) { say("enter a tree name first", true); return; }
+  try {
+    const resp = await fetch(name + ".json");
+    if (!resp.ok) throw new Error(resp.status);
+    render(await resp.json());
+  } catch (e) {
+    say(`could not fetch ${name}.json — when opened via file:// the browser ` +
+        "blocks fetch; use the file picker instead", true);
+  }
+}
+
+document.getElementById("load").addEventListener("click", loadByName);
+document.getElementById("name").addEventListener("keydown",
+  e => { if (e.key === "Enter") loadByName(); });
+document.getElementById("file").addEventListener("change", ev => {
+  const f = ev.target.files[0];
+  if (!f) return;
+  f.text().then(t => {
+    try { render(JSON.parse(t)); }
+    catch (e) { say(`${f.name} is not valid JSON: ${e.message}`, true); }
+  });
+});
+</script>
+</body>
+</html>

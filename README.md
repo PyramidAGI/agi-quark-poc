@@ -15,6 +15,7 @@ LOG -> GROUNDING -> QUARKS -> TRIANGLES -> ACTIONS -> GOAL
 - `mason_builder.html` — browser simulation that runs the mason triangle (see below).
 - `README-quark-turing.md` — design notes: a Turing machine over the quarks, why the current pipeline is not Turing complete, and three use cases for a quark tape.
 - `triangle_tree.py` — interactive builder for trees of G/S/A triangles (max 2 children each); see `README-triangle-tree.md`.
+- `triangle_viewer.html` — generic browser viewer for triangle tree JSON files: enter a tree name (or pick a file) and it draws the tree as SVG triangles; click a triangle to inspect its fields.
 
 ## Run the demo
 
