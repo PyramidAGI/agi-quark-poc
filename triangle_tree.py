@@ -1,4 +1,4 @@
-"""Interactive builder for trees of G/S/A triangles.
+r"""Interactive builder for trees of G/S/A triangles.
 
 A triangle is the unit from `triangle tree.png`:
 
