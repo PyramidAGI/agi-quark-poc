@@ -1,0 +1,53 @@
+{
+  "name": "quote",
+  "goal": "send fence quote to customer",
+  "sensor": "customer request for a fence received",
+  "actuator": "send quote document to customer",
+  "control": "only send when fence spec and price are both complete",
+  "plan": "specify fence, calculate price, compose and send quote",
+  "navigate": "route between fence and calculation-price until both report done",
+  "children": [
+    {
+      "name": "fence",
+      "goal": "complete fence specification",
+      "sensor": "customer wishes: length, height, type, gates",
+      "actuator": "record fence spec (length, height, panels, gates)",
+      "control": "check measurements are complete and consistent",
+      "plan": "combine customer wishes with site picture into a buildable spec",
+      "navigate": "ask picture triangle when visual site info is missing",
+      "children": [
+        {
+          "name": "picture",
+          "goal": "capture the site situation",
+          "sensor": "photo of the yard boundary from customer",
+          "actuator": "annotate measurements and obstacles on the photo",
+          "control": "reject blurry or incomplete photos, request a retake",
+          "plan": "extract boundary length, slope and obstacles from the photo",
+          "navigate": "scan the photo from start post to end post",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "calculation-price",
+      "goal": "compute the quote price",
+      "sensor": "BOM totals, labor hours, margin rules",
+      "actuator": "write the price into the quote document",
+      "control": "check price against minimum margin and market range",
+      "plan": "materials cost + labor cost + margin = price",
+      "navigate": "walk the BOM lines and sum costs per category",
+      "children": [
+        {
+          "name": "BOM",
+          "goal": "list all materials for the fence",
+          "sensor": "fence specification (length, height, gates)",
+          "actuator": "emit bill-of-materials lines: posts, panels, concrete, hardware",
+          "control": "verify quantities cover the full length plus 5% waste",
+          "plan": "one post per 2m, panels between posts, concrete per post, hinges per gate",
+          "navigate": "iterate the fence sections from start to end",
+          "children": []
+        }
+      ]
+    }
+  ]
+}
