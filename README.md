@@ -14,6 +14,7 @@ LOG -> GROUNDING -> QUARKS -> TRIANGLES -> ACTIONS -> GOAL
 - `mason-robot.csv` — a standalone triangle for a mason robot that builds a wall.
 - `mason_builder.html` — browser simulation that runs the mason triangle (see below).
 - `README-quark-turing.md` — design notes: a Turing machine over the quarks, why the current pipeline is not Turing complete, and three use cases for a quark tape.
+- `triangle_tree.py` — interactive builder for trees of G/S/A triangles (max 2 children each); see `README-triangle-tree.md`.
 
 ## Run the demo
 
