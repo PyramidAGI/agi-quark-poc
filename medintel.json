@@ -1,0 +1,83 @@
+{
+  "name": "medintel",
+  "goal": "answer AI queries about product use and maintenance patterns in sales reports",
+  "sensor": "analyst question in natural language plus new sales and service reports arriving",
+  "actuator": "deliver an insight report with charts, findings and recommended actions",
+  "control": "only publish insights backed by at least three independent reports; flag low-confidence answers",
+  "plan": "harvest reports, translate the question into queries, mine patterns, compose the insight",
+  "navigate": "route between report-harvest and query-engine until the insight passes the evidence check",
+  "children": [
+    {
+      "name": "report-harvest",
+      "goal": "build a clean, query-ready pool of sales and service reports",
+      "sensor": "ERP sales orders, field-service tickets, installed-base registry, warranty claims",
+      "actuator": "write normalized report records into the analysis store",
+      "control": "reject duplicates and records missing machine serial, date or customer site",
+      "plan": "pull from each source, map to one schema, link every record to a machine serial",
+      "navigate": "sweep sources oldest-to-newest, then loop back for late-arriving service tickets",
+      "children": [
+        {
+          "name": "erp-connector",
+          "goal": "extract sales and service lines from the ERP",
+          "sensor": "Business Central API: invoices, contracts, spare-part orders",
+          "actuator": "emit raw report rows with machine model, serial, site and dates",
+          "control": "verify row counts against ERP totals; retry on partial pulls",
+          "plan": "authenticate, page through new entries since last sync, tag each with source and timestamp",
+          "navigate": "walk entity by entity: orders, then contracts, then spare parts",
+          "children": []
+        },
+        {
+          "name": "report-cleaner",
+          "goal": "turn messy free-text reports into structured facts",
+          "sensor": "raw report rows with free-text engineer notes and symptom descriptions",
+          "actuator": "attach structured tags: failure mode, component, usage intensity, downtime hours",
+          "control": "quarantine rows where the extracted tags contradict the numeric fields",
+          "plan": "parse notes with the language model, map phrases to the failure-mode taxonomy",
+          "navigate": "process per machine family so model context stays consistent",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "query-engine",
+      "goal": "turn an analyst question into evidence-backed patterns",
+      "sensor": "analyst question plus the normalized report pool",
+      "actuator": "produce ranked pattern candidates with supporting report citations",
+      "control": "drop patterns that vanish when one customer or one quarter is excluded",
+      "plan": "classify the question as usage or maintenance, dispatch to the matching miner, merge results",
+      "navigate": "route usage questions to usage-patterns, wear questions to maintenance-forecast, both when mixed",
+      "children": [
+        {
+          "name": "usage-patterns",
+          "goal": "find how customers actually use the machines",
+          "sensor": "scan counts, operating hours, consumable orders per machine serial",
+          "actuator": "emit usage clusters: heavy 24/7 sites, weekday clinics, seasonal screening programs",
+          "control": "require each cluster to hold at least five machines before naming it a pattern",
+          "plan": "compare consumable order rhythm against contracted capacity to infer real utilization",
+          "navigate": "iterate machine families, then drill from region to site to serial",
+          "children": []
+        },
+        {
+          "name": "maintenance-forecast",
+          "goal": "predict which machines need service before they fail",
+          "sensor": "failure-mode tags, part replacement intervals, downtime hours per serial",
+          "actuator": "emit a watchlist: serial, suspected component, predicted weeks until failure",
+          "control": "backtest every prediction rule on last year's failures; keep rules above 80% precision",
+          "plan": "correlate usage intensity from usage-patterns with observed wear to build lifetime curves",
+          "navigate": "ask usage-patterns for a machine's cluster before scoring its wear",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "insight-delivery",
+      "goal": "hand the analyst a decision-ready answer",
+      "sensor": "ranked patterns and watchlists from query-engine",
+      "actuator": "publish the insight report and alert service planners about urgent watchlist machines",
+      "control": "block publication if any cited report is quarantined or the confidence score is below threshold",
+      "plan": "summarize patterns in plain language, attach evidence charts, propose next actions",
+      "navigate": "order findings by business impact: safety first, then downtime cost, then upsell",
+      "children": []
+    }
+  ]
+}

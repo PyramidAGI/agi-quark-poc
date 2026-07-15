@@ -1,0 +1,83 @@
+{
+  "name": "medintel",
+  "goal": "solve pattern problem",
+  "sensor": "event problem data",
+  "actuator": "data pattern reward organization",
+  "control": "val normal fix",
+  "plan": "sequence data pattern solve",
+  "navigate": "channel group waitfor event",
+  "children": [
+    {
+      "name": "report-harvest",
+      "goal": "container normal data",
+      "sensor": "transaction event data",
+      "actuator": "container group data",
+      "control": "val fix conflict",
+      "plan": "channel data container group",
+      "navigate": "sequence time loc",
+      "children": [
+        {
+          "name": "erp-connector",
+          "goal": "channel transaction data",
+          "sensor": "transaction contract data",
+          "actuator": "transport data container",
+          "control": "stat val fix",
+          "plan": "waitfor event channel data",
+          "navigate": "sequence group transaction",
+          "children": []
+        },
+        {
+          "name": "report-cleaner",
+          "goal": "normal data",
+          "sensor": "data conflict problem",
+          "actuator": "compress data pattern",
+          "control": "conflict val fix",
+          "plan": "expand data pattern group",
+          "navigate": "group sequence normal",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "query-engine",
+      "goal": "problem pattern solve",
+      "sensor": "problem data group",
+      "actuator": "pattern stat reward",
+      "control": "stat val normal",
+      "plan": "problem group pattern solve",
+      "navigate": "channel group pattern",
+      "children": [
+        {
+          "name": "usage-patterns",
+          "goal": "activity pattern",
+          "sensor": "data activity time energy",
+          "actuator": "group pattern stat",
+          "control": "stat val normal group",
+          "plan": "compress data activity pattern",
+          "navigate": "sequence loc group",
+          "children": []
+        },
+        {
+          "name": "maintenance-forecast",
+          "goal": "waitfor event fix",
+          "sensor": "data time force problem",
+          "actuator": "event fix tool sequence",
+          "control": "stat val fix normal",
+          "plan": "activity pattern time expand",
+          "navigate": "channel group pattern waitfor",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "insight-delivery",
+      "goal": "reward organization",
+      "sensor": "pattern stat data",
+      "actuator": "transport data organization event",
+      "control": "val normal fix",
+      "plan": "compress pattern data sequence",
+      "navigate": "sequence pref dominate",
+      "children": []
+    }
+  ]
+}
