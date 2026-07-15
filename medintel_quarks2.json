@@ -1,0 +1,83 @@
+{
+  "name": "medintel",
+  "goal": "solve pattern problem machine",
+  "sensor": "event problem data machine",
+  "actuator": "data pattern reward organization stat clear",
+  "control": "val normal fix",
+  "plan": "sequence data pattern solve",
+  "navigate": "fork channel group waitfor event",
+  "children": [
+    {
+      "name": "report-harvest",
+      "goal": "container normal data stat full",
+      "sensor": "transaction event data machine",
+      "actuator": "container group data bond",
+      "control": "val fix conflict stat empty",
+      "plan": "channel data container group bond",
+      "navigate": "sequence time loc kinship",
+      "children": [
+        {
+          "name": "erp-connector",
+          "goal": "channel transaction data",
+          "sensor": "transaction contract data",
+          "actuator": "transport data container stat fast",
+          "control": "stat val fix stat full",
+          "plan": "waitfor event channel data",
+          "navigate": "sequence group transaction mode",
+          "children": []
+        },
+        {
+          "name": "report-cleaner",
+          "goal": "normal data stat clear",
+          "sensor": "data conflict problem emo",
+          "actuator": "compress data pattern mode",
+          "control": "conflict val fix stat rough",
+          "plan": "expand data pattern group mode",
+          "navigate": "group sequence kinship",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "query-engine",
+      "goal": "problem pattern solve",
+      "sensor": "problem data group",
+      "actuator": "pattern stat reward",
+      "control": "stat val normal",
+      "plan": "fork problem group solve",
+      "navigate": "fork channel group pattern",
+      "children": [
+        {
+          "name": "usage-patterns",
+          "goal": "activity pattern machine",
+          "sensor": "data activity time energy transducer",
+          "actuator": "group pattern mode stat fast stat slow",
+          "control": "stat val normal group stat size",
+          "plan": "compress data activity pattern",
+          "navigate": "sequence loc group kinship",
+          "children": []
+        },
+        {
+          "name": "maintenance-forecast",
+          "goal": "waitfor event fix machine stat broken",
+          "sensor": "data time force vitality stat hot",
+          "actuator": "event fix tool sequence",
+          "control": "stat val fix normal",
+          "plan": "activity pattern time expand vitality",
+          "navigate": "channel group pattern waitfor kinship",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "insight-delivery",
+      "goal": "reward organization stat clear",
+      "sensor": "pattern stat data emo",
+      "actuator": "transport data organization event",
+      "control": "val normal fix stat clear",
+      "plan": "compress pattern data sequence",
+      "navigate": "sequence pref dominate",
+      "children": []
+    }
+  ]
+}
