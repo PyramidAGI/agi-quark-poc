@@ -1,0 +1,136 @@
+{
+  "name": "humanoid",
+  "goal": "animate machine",
+  "sensor": "",
+  "actuator": "",
+  "control": "normal",
+  "plan": "",
+  "navigate": "",
+  "children": [
+    {
+      "name": "body",
+      "goal": "",
+      "sensor": "",
+      "actuator": "force",
+      "control": "",
+      "plan": "",
+      "navigate": "",
+      "children": [
+        {
+          "name": "legs",
+          "goal": "transport",
+          "sensor": "",
+          "actuator": "",
+          "control": "",
+          "plan": "",
+          "navigate": "loc",
+          "children": [
+            {
+              "name": "balance",
+              "goal": "",
+              "sensor": "force",
+              "actuator": "",
+              "control": "fix stat fast",
+              "plan": "",
+              "navigate": "",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "arms",
+          "goal": "tool",
+          "sensor": "",
+          "actuator": "tool",
+          "control": "",
+          "plan": "",
+          "navigate": "",
+          "children": [
+            {
+              "name": "hand",
+              "goal": "",
+              "sensor": "stat soft stat rough",
+              "actuator": "",
+              "control": "force stat heavy",
+              "plan": "",
+              "navigate": "",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "senses",
+      "goal": "",
+      "sensor": "transducer",
+      "actuator": "",
+      "control": "",
+      "plan": "",
+      "navigate": "",
+      "children": [
+        {
+          "name": "eyes",
+          "goal": "",
+          "sensor": "radiation",
+          "actuator": "",
+          "control": "",
+          "plan": "pattern",
+          "navigate": "",
+          "children": []
+        },
+        {
+          "name": "ears",
+          "goal": "",
+          "sensor": "stat sound",
+          "actuator": "",
+          "control": "",
+          "plan": "",
+          "navigate": "waitfor event",
+          "children": []
+        },
+        {
+          "name": "skin",
+          "goal": "",
+          "sensor": "stat hot stat cold",
+          "actuator": "",
+          "control": "",
+          "plan": "",
+          "navigate": "",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "mind",
+      "goal": "solve problem",
+      "sensor": "",
+      "actuator": "",
+      "control": "conflict",
+      "plan": "sequence",
+      "navigate": "fork",
+      "children": [
+        {
+          "name": "social",
+          "goal": "bond",
+          "sensor": "emo",
+          "actuator": "",
+          "control": "",
+          "plan": "",
+          "navigate": "group kinship",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "power",
+      "goal": "energy stat full",
+      "sensor": "stat empty",
+      "actuator": "",
+      "control": "stat low",
+      "plan": "",
+      "navigate": "",
+      "children": []
+    }
+  ]
+}
