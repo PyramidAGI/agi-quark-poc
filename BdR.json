@@ -46,6 +46,37 @@
               "children": []
             }
           ]
+        },
+        {
+          "name": "userinput",
+          "goal": "wat is uw input",
+          "sensor": "",
+          "actuator": "",
+          "control": "",
+          "plan": "",
+          "navigate": "",
+          "children": [
+            {
+              "name": "name",
+              "goal": "",
+              "sensor": "",
+              "actuator": "",
+              "control": "",
+              "plan": "",
+              "navigate": "",
+              "children": []
+            },
+            {
+              "name": "password",
+              "goal": "",
+              "sensor": "",
+              "actuator": "",
+              "control": "",
+              "plan": "",
+              "navigate": "",
+              "children": []
+            }
+          ]
         }
       ]
     }

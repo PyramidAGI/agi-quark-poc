@@ -1,0 +1,8 @@
+;;;;;;;;
+managing the social atmosphere;c;activity;agent;group;;60;50;
+;;;;;;;;
+managing the social atmosphere;a;sensor;force;bond;stat size;86;2
+;c;transform;activity;stat low;force;50;50
+;;;;;;;;
+atmosphere positive, group cohesive;c;activity;agent;group;goal bond+emo;80;90;
+;;;;;;;;

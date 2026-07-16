@@ -1,0 +1,278 @@
+{
+  "name": "humanoid-sol",
+  "goal": "animate machine solve problem",
+  "sensor": "data event loc force energy",
+  "actuator": "force transport tool channel",
+  "control": "conflict val fix normal",
+  "plan": "sequence pattern solve",
+  "navigate": "fork loc group",
+  "children": [
+    {
+      "name": "body",
+      "goal": "support animate machine",
+      "sensor": "",
+      "actuator": "force transport tool",
+      "control": "val normal stat broken",
+      "plan": "",
+      "navigate": "",
+      "children": [
+        {
+          "name": "frame",
+          "goal": "support container machine",
+          "sensor": "force stat broken",
+          "actuator": "",
+          "control": "val normal",
+          "plan": "",
+          "navigate": "",
+          "children": []
+        },
+        {
+          "name": "locomotion",
+          "goal": "transport animate",
+          "sensor": "force loc activity",
+          "actuator": "drive force transport",
+          "control": "val normal stat fast stat slow",
+          "plan": "sequence loc activity",
+          "navigate": "loc waitfor event",
+          "children": [
+            {
+              "name": "legs",
+              "goal": "transport support",
+              "sensor": "force loc",
+              "actuator": "drive force",
+              "control": "val normal",
+              "plan": "",
+              "navigate": "",
+              "children": []
+            },
+            {
+              "name": "feet",
+              "goal": "support transport",
+              "sensor": "force stat soft stat rough",
+              "actuator": "force support",
+              "control": "val normal",
+              "plan": "",
+              "navigate": "",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "manipulation",
+          "goal": "tool transport",
+          "sensor": "force loc stat soft stat rough",
+          "actuator": "tool force transport bond",
+          "control": "val normal stat heavy",
+          "plan": "sequence tool loc",
+          "navigate": "",
+          "children": [
+            {
+              "name": "arms",
+              "goal": "transport tool",
+              "sensor": "force loc",
+              "actuator": "drive force transport",
+              "control": "val normal",
+              "plan": "",
+              "navigate": "",
+              "children": []
+            },
+            {
+              "name": "hands",
+              "goal": "tool bond",
+              "sensor": "force stat soft stat rough stat hot",
+              "actuator": "tool force bond",
+              "control": "val normal stat heavy",
+              "plan": "",
+              "navigate": "",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "protection",
+          "goal": "shield container machine",
+          "sensor": "force stat hot stat broken",
+          "actuator": "shield support",
+          "control": "conflict val fix normal",
+          "plan": "",
+          "navigate": "",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "senses",
+      "goal": "data pattern",
+      "sensor": "transducer",
+      "actuator": "",
+      "control": "",
+      "plan": "compress data pattern",
+      "navigate": "",
+      "children": [
+        {
+          "name": "vision",
+          "goal": "",
+          "sensor": "radiation",
+          "actuator": "",
+          "control": "",
+          "plan": "pattern data loc",
+          "navigate": "",
+          "children": []
+        },
+        {
+          "name": "hearing",
+          "goal": "",
+          "sensor": "stat sound",
+          "actuator": "",
+          "control": "",
+          "plan": "pattern event",
+          "navigate": "waitfor event",
+          "children": []
+        },
+        {
+          "name": "touch",
+          "goal": "",
+          "sensor": "force stat hot stat cold stat soft stat rough",
+          "actuator": "",
+          "control": "",
+          "plan": "",
+          "navigate": "",
+          "children": []
+        },
+        {
+          "name": "proprioception",
+          "goal": "",
+          "sensor": "loc force activity transducer",
+          "actuator": "",
+          "control": "val normal",
+          "plan": "",
+          "navigate": "",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "control",
+      "goal": "solve problem animate normal",
+      "sensor": "data event conflict",
+      "actuator": "channel data",
+      "control": "conflict val fix normal",
+      "plan": "fork sequence solve",
+      "navigate": "fork group",
+      "children": [
+        {
+          "name": "world-model",
+          "goal": "data pattern loc",
+          "sensor": "data event",
+          "actuator": "compress expand data pattern",
+          "control": "val normal",
+          "plan": "sequence pattern",
+          "navigate": "",
+          "children": []
+        },
+        {
+          "name": "motion-control",
+          "goal": "animate transport normal",
+          "sensor": "force loc activity",
+          "actuator": "drive force",
+          "control": "conflict val fix normal",
+          "plan": "sequence activity",
+          "navigate": "",
+          "children": [
+            {
+              "name": "balance",
+              "goal": "support animate normal",
+              "sensor": "force loc transducer",
+              "actuator": "drive force",
+              "control": "conflict val fix normal",
+              "plan": "waitfor event sequence",
+              "navigate": "",
+              "children": []
+            },
+            {
+              "name": "coordination",
+              "goal": "group activity normal",
+              "sensor": "data activity time",
+              "actuator": "channel drive force",
+              "control": "val normal stat fast stat slow",
+              "plan": "sequence group activity",
+              "navigate": "",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "task-planner",
+          "goal": "solve problem reward",
+          "sensor": "data conflict pref event",
+          "actuator": "channel data event",
+          "control": "conflict val fix",
+          "plan": "fork sequence solve",
+          "navigate": "fork waitfor event",
+          "children": []
+        },
+        {
+          "name": "social-interface",
+          "goal": "bond kinship",
+          "sensor": "emo stat sound pattern",
+          "actuator": "channel data stat sound pattern",
+          "control": "conflict val normal",
+          "plan": "waitfor event sequence",
+          "navigate": "group kinship",
+          "children": []
+        },
+        {
+          "name": "safety-supervisor",
+          "goal": "shield animate normal",
+          "sensor": "conflict force stat hot stat broken",
+          "actuator": "shield fix channel",
+          "control": "conflict val fix normal",
+          "plan": "fork waitfor event",
+          "navigate": "",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "power",
+      "goal": "energy machine normal",
+      "sensor": "energy val stat full stat empty stat hot",
+      "actuator": "channel energy drive",
+      "control": "conflict val fix normal",
+      "plan": "sequence energy channel",
+      "navigate": "",
+      "children": [
+        {
+          "name": "energy-store",
+          "goal": "energy stat full",
+          "sensor": "energy stat full stat empty stat hot",
+          "actuator": "",
+          "control": "val normal stat low",
+          "plan": "",
+          "navigate": "",
+          "children": []
+        },
+        {
+          "name": "power-distribution",
+          "goal": "channel energy group machine",
+          "sensor": "energy val",
+          "actuator": "channel energy",
+          "control": "conflict val fix normal",
+          "plan": "sequence channel group",
+          "navigate": "",
+          "children": []
+        },
+        {
+          "name": "thermal-management",
+          "goal": "machine normal",
+          "sensor": "stat hot stat cold",
+          "actuator": "channel energy",
+          "control": "conflict val fix normal",
+          "plan": "",
+          "navigate": "",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "name": "mason",
+  "goal": "build wall",
+  "sensor": "",
+  "actuator": "",
+  "control": "",
+  "plan": "",
+  "navigate": "",
+  "children": [
+    {
+      "name": "left",
+      "goal": "",
+      "sensor": "",
+      "actuator": "",
+      "control": "",
+      "plan": "",
+      "navigate": "",
+      "children": []
+    },
+    {
+      "name": "right",
+      "goal": "",
+      "sensor": "",
+      "actuator": "",
+      "control": "",
+      "plan": "",
+      "navigate": "",
+      "children": [
+        {
+          "name": "lower",
+          "goal": "",
+          "sensor": "",
+          "actuator": "",
+          "control": "",
+          "plan": "",
+          "navigate": "",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

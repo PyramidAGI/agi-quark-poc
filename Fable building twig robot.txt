@@ -1,0 +1,42 @@
+The new program is done and verified: twig_builder.html — open it in a browser (double-click, no server needed).
+
+  Verification: new twig_builder.html — cluster-driven self-building twig robots with quark labels
+
+  Verdict: PASS
+
+  Claim: Left panel offers clusters of log entries, each representing a twig robot; selecting one makes the robot build itself part by part, with arrows and
+  quark-cluster labels grounding every component.
+
+  Method: Cold start (no repo verifier skills) — drove the page in headless Chrome via puppeteer-core, capturing screenshots and console errors across the
+  full interaction flow.
+
+  Steps
+
+  1. ✅ Loaded page → Anchor Climber auto-selected and started assembling; mid-build screenshot shows legs + stem drawn with labels, status line reading
+  building stem — grounded by nature + support, and the matching log line highlighted in the left card.
+  2. ✅ Let it finish → full robot with arrows to leg, stem, arm, servo, grasper and a green goal bond+support branch the grasper reaches for; status
+  confirms assembly.
+  3. ✅ Clicked Energy Keeper and Branch Scout cards → each robot built with its own components (battery pack + leaf collector + sensor eye; wheels + radar
+  + camera + thorn probe), all labels legible, zero console errors.
+  4. ✅ Clicked Rebuild → robot cleanly re-assembled from scratch.
+  5. 🔍 Switched robots mid-build (twice, rapidly) → cancellation works (no orphan geometry), but the abandoned build left a log line stuck highlighted in
+  the old card. Fixed by clearing highlights on all cards at build start; re-drove the same interrupt sequence → 0 stuck highlights, no errors.
+
+  How it's grounded
+
+  - Each left-panel card is a real cluster from log.csv: the robot×tree anchor triangle, the robot×battery energy triangle, and the branch grounding rules
+  (path_density > 0.5 → pattern, etc.).
+  - Each robot component is a word with its actual quark cluster from combinations.csv: grasper = tool+animate+force, leg = support+force+animate, battery =
+  energy+transducer, radar = pattern+tool+transducer, and so on.
+  - As each part builds, the log lines that fire on its quarks flash in the card (e.g. the grasper highlights structure usable as leverage → tool and
+  engage_anchor), then keep an amber tick — so by the end you can see which entries the finished robot covers. Goal labels (bond+support, energy+stat full)
+  render in green with their own arrow.
+  - Geometry is seeded per robot, so each one always grows the same recognizable twigs while keeping the organic jitter of twig_robots.html.
+
+  Findings
+
+  - ⚠️ (fixed during verification) Interrupting a build mid-way left a stale highlight in the abandoned card — now cleared on every new build.
+  - The Energy Keeper's goal marker is an abstract green up-arrow rather than a physical part; it reads fine but is the least "grounded" visual of the set —
+  easy to swap for something better if you have an idea.
+  - body = container+support+animate for the Energy Keeper uses the body entry from combinations.csv; the Scout's body shows only container+support since
+  its chassis isn't animate — intentional, but worth knowing it's hand-curated per robot.
