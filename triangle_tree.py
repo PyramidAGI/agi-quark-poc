@@ -7,14 +7,14 @@ A triangle is the unit from `triangle tree.png`:
       S---A         A = Actuator
 
 Each triangle also holds three behaviors: control, plan and navigate.
-Triangles compose into a tree; every triangle fans out to AT MOST TWO
+Triangles compose into a tree; every triangle fans out to any number of
 child triangles.
 
 On start the program asks for a project name - that is also the tree's
 name, the root triangle's name, and the save file (<project>.json).
 
 Commands (inside the program):
-    add <parent> <name>      add a child triangle under <parent> (max 2)
+    add <parent> <name>      add a child triangle under <parent>
     set <name> <field> <text>   field: goal sensor actuator control plan navigate
     info <name>              show all fields of one triangle
     show                     draw the tree
@@ -28,15 +28,19 @@ import json
 import sys
 from pathlib import Path
 
+try:
+    import readline            # on Windows: pip install pyreadline3
+except ImportError:
+    readline = None
+
 FIELDS = ("goal", "sensor", "actuator", "control", "plan", "navigate")
-MAX_CHILDREN = 2
 
 
 class Triangle:
     def __init__(self, name):
         self.name = name
         self.fields = {f: "" for f in FIELDS}
-        self.children = []          # 0..MAX_CHILDREN Triangles
+        self.children = []          # any number of Triangles
 
     def to_dict(self):
         return {"name": self.name, **self.fields,
@@ -89,9 +93,6 @@ class Tree:
         parent = self.find(parent_name)
         if parent is None:
             return f"no triangle named '{parent_name}'"
-        if len(parent.children) >= MAX_CHILDREN:
-            return (f"'{parent_name}' already fans out to {MAX_CHILDREN} "
-                    f"triangles ({', '.join(c.name for c in parent.children)})")
         if self.find(name):
             return f"a triangle named '{name}' already exists"
         parent.children.append(Triangle(name))
@@ -137,23 +138,23 @@ class Tree:
         for f in FIELDS:
             lines.append(f"  {f:<9}: {t.fields[f] or '-'}")
         kids = ", ".join(c.name for c in t.children) or "-"
-        lines.append(f"  children : {kids}  ({len(t.children)}/{MAX_CHILDREN})")
+        lines.append(f"  children : {kids}  ({len(t.children)})")
         return "\n".join(lines)
 
     def show(self):
         lines = [f"tree '{self.project}'"]
 
-        def draw(node, prefix, tail):
-            branch = "" if prefix == "" and tail else ("`-- " if tail else "|-- ")
+        def draw(node, prefix, tail, root=False):
+            branch = "" if root else ("`-- " if tail else "|-- ")
             filled = sum(1 for f in FIELDS if node.fields[f])
             goal = f"  G:{node.fields['goal']}" if node.fields["goal"] else ""
             lines.append(f"{prefix}{branch}/\\ {node.name}"
                          f"  [{filled}/{len(FIELDS)} fields]{goal}")
-            ext = "" if prefix == "" and tail else ("    " if tail else "|   ")
+            ext = "" if root else ("    " if tail else "|   ")
             for i, c in enumerate(node.children):
                 draw(c, prefix + ext, i == len(node.children) - 1)
 
-        draw(self.root, "", True)
+        draw(self.root, "", True, root=True)
         return "\n".join(lines)
 
     def save(self):
@@ -163,9 +164,38 @@ class Tree:
 
 HELP = __doc__[__doc__.index("Commands"):]
 
+COMMANDS = ("add", "set", "info", "show", "remove", "rename", "save",
+            "quit", "exit", "help")
+
+
+def setup_completion(tree):
+    if readline is None:
+        return
+
+    def complete(text, state):
+        buf = readline.get_line_buffer()
+        words_before = len(buf[:readline.get_begidx()].split())
+        if words_before == 0:
+            options = COMMANDS
+        else:
+            cmd = buf.split()[0]
+            if cmd in ("add", "set", "info", "remove", "rename") \
+                    and words_before == 1:
+                options = [t.name for t in tree.walk()]
+            elif cmd == "set" and words_before == 2:
+                options = FIELDS
+            else:
+                options = ()
+        matches = [o for o in options if o.startswith(text)]
+        return matches[state] if state < len(matches) else None
+
+    readline.set_completer_delims(" ")
+    readline.set_completer(complete)
+    readline.parse_and_bind("tab: complete")
+
 
 def main():
-    print("Triangle tree builder - trees of G/S/A triangles (max 2 children each)")
+    print("Triangle tree builder - trees of G/S/A triangles")
     project = " ".join(sys.argv[1:]) or ""
     while not project.strip():
         try:
@@ -173,6 +203,7 @@ def main():
         except (KeyboardInterrupt, EOFError):
             return
     tree = Tree(project)
+    setup_completion(tree)
     print("type 'help' for commands\n")
 
     while True:
