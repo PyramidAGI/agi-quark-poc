@@ -43,13 +43,31 @@ reset
 clear
 ```
 
-## How the POC uses the log
+## Log record format
 
-The runner parses records shaped as:
+Every record in `log.csv` (and the triangle CSVs) has eight fields:
 
 ```text
-description ; role ; type/operator ; e1 ; e2 ; relation/quark/action ; value ; threshold
+natural language sentence ; e0 ; e1 ; e2 ; e3 ; e4 ; e5 ; e6
 ```
+
+| field | name | meaning | example (triangle row) | example (grounding row) |
+|---|---|---|---|---|
+| — | sentence | natural language description | `natural surface detected` | `battery running low` |
+| e0 | role | `q`, `a`, `c` or `i` | `a` | `i` |
+| e1 | summary | row type / operator | `stat`, `mode`, `activity` | `lt`, `gt`, `eq` |
+| e2 | concept1 | first concept | `robot001` | sensor name `battery_%` |
+| e3 | concept2 | second concept | `tree001` | unit `%` |
+| e4 | extra | quark, action, or `goal` cluster | `nature` | quark `stat low` |
+| e5 | val | current/default reading — the environment speaking first | `30` | `75` |
+| e6 | threshold | firing cutoff (grounding rules); acts as rule salience in stat rows | `40` | `30` |
+
+Related records form a cluster, wrapped in `;;;;;;;;` separator rows. Only the first
+record of a cluster carries the natural language sentence; the records that follow it
+leave the sentence empty (e.g. an `a;stat` row has the sentence, its paired `c;mode`
+row starts with `;c;mode;...`).
+
+## How the POC uses the log
 
 The core patterns are:
 
