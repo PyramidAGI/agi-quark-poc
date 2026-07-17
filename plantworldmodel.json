@@ -1,0 +1,84 @@
+{
+  "name": "plantworldmodel",
+  "goal": "data pattern plant",
+  "sensor": "data event plant",
+  "actuator": "compress expand data pattern",
+  "control": "val normal",
+  "plan": "sequence pattern",
+  "navigate": "fork group",
+  "children": [
+    {
+      "name": "disease",
+      "goal": "fix plant vitality normal",
+      "sensor": "pattern event vitality stat broken",
+      "actuator": "fix shield",
+      "control": "conflict val fix normal",
+      "plan": "fork solve problem",
+      "navigate": "fork",
+      "children": [
+        {
+          "name": "pythoftera",
+          "goal": "shield plant vitality",
+          "sensor": "pattern plant stat liquid stat vapor",
+          "actuator": "fix shield stat dry",
+          "control": "conflict val fix",
+          "plan": "waitfor event sequence",
+          "navigate": "",
+          "children": [
+            {
+              "name": "spottydisease",
+              "goal": "fix plant stat clear",
+              "sensor": "radiation pattern stat size",
+              "actuator": "fix",
+              "control": "if contagion of fungi -> alert boss, give medicine",
+              "plan": "sequence fix",
+              "navigate": "",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "appearance",
+      "goal": "data pattern",
+      "sensor": "radiation pattern stat size",
+      "actuator": "",
+      "control": "val normal",
+      "plan": "compress data pattern",
+      "navigate": "",
+      "children": []
+    },
+    {
+      "name": "class",
+      "goal": "group pattern organization",
+      "sensor": "data pattern",
+      "actuator": "compress data group",
+      "control": "",
+      "plan": "sequence group pattern",
+      "navigate": "fork group",
+      "children": [
+        {
+          "name": "plantclass",
+          "goal": "group plant nature",
+          "sensor": "pattern plant",
+          "actuator": "",
+          "control": "",
+          "plan": "",
+          "navigate": "group",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "buildyourself",
+      "goal": "",
+      "sensor": "",
+      "actuator": "",
+      "control": "",
+      "plan": "",
+      "navigate": "",
+      "children": []
+    }
+  ]
+}
