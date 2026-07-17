@@ -191,7 +191,15 @@ def setup_completion(tree):
 
     readline.set_completer_delims(" ")
     readline.set_completer(complete)
-    readline.parse_and_bind("tab: complete")
+    # macOS often links Python against libedit instead of GNU readline;
+    # libedit uses a different bind syntax, otherwise Tab inserts a tab.
+    backend = getattr(readline, "backend",
+                      "editline" if "libedit" in (readline.__doc__ or "")
+                      else "readline")
+    if backend == "editline":
+        readline.parse_and_bind("bind ^I rl_complete")
+    else:
+        readline.parse_and_bind("tab: complete")
 
 
 def main():
