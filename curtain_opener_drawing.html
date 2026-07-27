@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Curtain Opener Component Drawing</title>
+<style>
+  :root {
+    --paper: #f4f6f8;
+    --plate: #fbfcfd;
+    --ink: #22303d;
+    --line: #4a5d70;
+    --faint: #94a5b5;
+    --grid: rgba(74, 93, 112, 0.10);
+    --accent: #d9531e;
+    --accent-soft: rgba(217, 83, 30, 0.14);
+    --edge: #ccd5dd;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0f151b;
+      --plate: #151d25;
+      --ink: #dde5ec;
+      --line: #9db0c2;
+      --faint: #6c7f91;
+      --grid: rgba(157, 176, 194, 0.10);
+      --accent: #ff7a45;
+      --accent-soft: rgba(255, 122, 69, 0.16);
+      --edge: #2b3946;
+    }
+  }
+  :root[data-theme="light"] {
+    --paper: #f4f6f8;
+    --plate: #fbfcfd;
+    --ink: #22303d;
+    --line: #4a5d70;
+    --faint: #94a5b5;
+    --grid: rgba(74, 93, 112, 0.10);
+    --accent: #d9531e;
+    --accent-soft: rgba(217, 83, 30, 0.14);
+    --edge: #ccd5dd;
+  }
+  :root[data-theme="dark"] {
+    --paper: #0f151b;
+    --plate: #151d25;
+    --ink: #dde5ec;
+    --line: #9db0c2;
+    --faint: #6c7f91;
+    --grid: rgba(157, 176, 194, 0.10);
+    --accent: #ff7a45;
+    --accent-soft: rgba(255, 122, 69, 0.16);
+    --edge: #2b3946;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+  }
+  .sheet {
+    max-width: 1020px;
+    margin: 0 auto;
+    padding: 40px 24px 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  header .eyebrow {
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  header h1 {
+    margin: 6px 0 0;
+    font-size: 1.6rem;
+    font-weight: 650;
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+  }
+  header p {
+    margin: 4px 0 0;
+    color: var(--faint);
+    font-size: 0.92rem;
+    max-width: 62ch;
+  }
+
+  .plate {
+    background: var(--plate);
+    border: 1px solid var(--edge);
+    border-radius: 4px;
+    padding: 10px;
+    overflow-x: auto;
+  }
+  .plate svg { display: block; width: 100%; height: auto; min-width: 640px; }
+
+  .legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 8px 24px;
+    padding: 4px 2px;
+  }
+  .legend .part {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 0.9rem;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--edge);
+  }
+  .legend .num {
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: 0.78rem;
+    color: var(--accent);
+    flex: 0 0 1.6em;
+  }
+  .legend .name {
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    flex: 0 0 auto;
+  }
+  .legend .desc { color: var(--faint); font-size: 0.82rem; }
+
+  .titleblock {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 28px;
+    justify-content: space-between;
+    border-top: 2px solid var(--line);
+    padding-top: 8px;
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .titleblock strong { color: var(--ink); font-weight: 600; }
+</style>
+
+<div class="sheet">
+  <header>
+    <div class="eyebrow">Technical illustration &middot; Dwg 002-A</div>
+    <h1>Automatic Curtain Opener &mdash; Component Layout</h1>
+    <p>Front elevation. Window and curtains shown for context; drive electronics (3, 6, 7) in cutaway inside the housing. Opens at dawn, closes at dusk &mdash; with randomized offsets in holiday mode.</p>
+  </header>
+
+  <div class="plate">
+    <svg viewBox="0 0 920 640" role="img" aria-label="Front-view drawing of an automatic curtain opener with numbered callouts for housing, rail, motor, carrier, light sensor, computer, clock, end stops, power supply, and remote interface">
+      <defs>
+        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M 20 0 L 0 0 0 20" fill="none" stroke="var(--grid)" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect x="0" y="0" width="920" height="640" fill="url(#grid)"/>
+
+      <!-- floor line with hatching -->
+      <g stroke="var(--faint)" stroke-width="1.4" fill="none">
+        <path d="M 40 592 L 880 592"/>
+        <path d="M 70 592 l -10 12 M 150 592 l -10 12 M 230 592 l -10 12 M 310 592 l -10 12 M 390 592 l -10 12 M 470 592 l -10 12 M 550 592 l -10 12 M 630 592 l -10 12 M 710 592 l -10 12 M 790 592 l -10 12 M 860 592 l -10 12"/>
+      </g>
+
+      <!-- daylight: sun + rays toward sensor -->
+      <g stroke="var(--faint)" fill="none" stroke-width="1.5">
+        <circle cx="800" cy="44" r="15"/>
+        <path d="M 800 22 v -8 M 800 66 v 8 M 778 44 h -8 M 822 44 h 8 M 785 29 l -6 -6 M 815 29 l 6 -6 M 785 59 l -6 6 M 815 59 l 6 6"/>
+        <path d="M 786 60 L 702 100 M 794 72 L 710 108" stroke-dasharray="5 5"/>
+      </g>
+
+      <!-- window -->
+      <g fill="var(--plate)" stroke="var(--line)">
+        <rect x="260" y="200" width="400" height="320" stroke-width="3"/>
+        <rect x="272" y="212" width="376" height="296" stroke-width="1.5"/>
+        <path d="M 460 212 V 508 M 272 360 H 648" stroke-width="1.5"/>
+      </g>
+
+      <!-- light sensor on wall above window -->
+      <g stroke="var(--line)" stroke-width="1.8" fill="var(--plate)">
+        <rect x="682" y="112" width="16" height="6"/>
+        <path d="M 680 112 A 10 10 0 0 1 700 112"/>
+      </g>
+
+      <!-- rail -->
+      <rect x="140" y="146" width="640" height="10" rx="4" fill="var(--plate)" stroke="var(--line)" stroke-width="2"/>
+      <!-- belt (dashed, inside rail) -->
+      <line x1="145" y1="151" x2="773" y2="151" stroke="var(--faint)" stroke-width="1.4" stroke-dasharray="6 5"/>
+
+      <!-- end stops -->
+      <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.8">
+        <rect x="240" y="140" width="10" height="20"/>
+        <rect x="766" y="140" width="10" height="20"/>
+      </g>
+
+      <!-- curtain gliders -->
+      <g fill="var(--plate)" stroke="var(--line)" stroke-width="1.2">
+        <circle cx="280" cy="160" r="2.5"/><circle cx="300" cy="160" r="2.5"/><circle cx="320" cy="160" r="2.5"/><circle cx="340" cy="160" r="2.5"/><circle cx="360" cy="160" r="2.5"/>
+        <circle cx="560" cy="160" r="2.5"/><circle cx="580" cy="160" r="2.5"/><circle cx="600" cy="160" r="2.5"/><circle cx="620" cy="160" r="2.5"/><circle cx="640" cy="160" r="2.5"/>
+      </g>
+
+      <!-- curtains (the moved elements, accent) -->
+      <g fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.8" stroke-linejoin="round">
+        <path d="M 274 160 L 384 160 L 384 540 Q 356 532 340 540 Q 322 548 306 540 Q 290 532 274 540 Z"/>
+        <path d="M 540 160 L 650 160 L 650 540 Q 622 548 606 540 Q 588 532 572 540 Q 556 548 540 540 Z"/>
+      </g>
+      <g stroke="var(--accent)" stroke-width="1" fill="none" opacity="0.55">
+        <path d="M 292 162 c 6 60 -6 130 0 190 c 6 60 -6 130 0 184"/>
+        <path d="M 310 162 c 6 60 -6 130 0 190 c 6 60 -6 130 0 184"/>
+        <path d="M 328 162 c 6 60 -6 130 0 190 c 6 60 -6 130 0 184"/>
+        <path d="M 346 162 c 6 60 -6 130 0 190 c 6 60 -6 130 0 184"/>
+        <path d="M 364 162 c 6 60 -6 130 0 190 c 6 60 -6 130 0 184"/>
+        <path d="M 558 162 c 6 60 -6 130 0 190 c 6 60 -6 130 0 184"/>
+        <path d="M 576 162 c 6 60 -6 130 0 190 c 6 60 -6 130 0 184"/>
+        <path d="M 594 162 c 6 60 -6 130 0 190 c 6 60 -6 130 0 184"/>
+        <path d="M 612 162 c 6 60 -6 130 0 190 c 6 60 -6 130 0 184"/>
+        <path d="M 630 162 c 6 60 -6 130 0 190 c 6 60 -6 130 0 184"/>
+      </g>
+
+      <!-- carriers on leading edges -->
+      <g fill="var(--plate)" stroke="var(--line)" stroke-width="1.8">
+        <circle cx="376" cy="148" r="4"/><circle cx="392" cy="148" r="4"/>
+        <rect x="370" y="152" width="28" height="18" rx="3"/>
+        <circle cx="534" cy="148" r="4"/><circle cx="548" cy="148" r="4"/>
+        <rect x="528" y="152" width="26" height="18" rx="3"/>
+      </g>
+
+      <!-- housing with cutaway internals -->
+      <rect x="88" y="108" width="150" height="96" rx="6" fill="var(--plate)" stroke="var(--line)" stroke-width="2.4"/>
+      <g fill="none" stroke="var(--line)" stroke-width="1.6">
+        <!-- motor -->
+        <circle cx="122" cy="156" r="15"/>
+        <circle cx="122" cy="156" r="5"/>
+        <path d="M 112 146 l 20 20 M 132 146 l -20 20" stroke-width="1"/>
+        <!-- computer chip -->
+        <rect x="155" y="118" width="26" height="22" rx="2"/>
+        <path d="M 155 123 h -6 M 155 129 h -6 M 155 135 h -6 M 181 123 h 6 M 181 129 h 6 M 181 135 h 6" stroke-width="1.2"/>
+        <!-- clock -->
+        <circle cx="210" cy="178" r="13"/>
+        <path d="M 210 178 V 168 M 210 178 H 218" stroke-width="1.4"/>
+        <!-- antenna with wireless arcs -->
+        <path d="M 225 108 V 90"/>
+        <path d="M 225 81 A 9 9 0 0 1 234 90 M 225 75 A 15 15 0 0 1 240 90" stroke-width="1.2"/>
+      </g>
+
+      <!-- power: PSU brick, cables, wall outlet -->
+      <g fill="var(--plate)" stroke="var(--line)" stroke-width="1.8">
+        <path d="M 130 520 C 118 400 106 280 112 206" fill="none"/>
+        <rect x="118" y="520" width="48" height="26" rx="4"/>
+        <path d="M 166 534 C 176 538 180 546 186 552" fill="none"/>
+        <rect x="182" y="550" width="24" height="28" rx="3"/>
+        <circle cx="190" cy="562" r="1.8" fill="var(--line)"/>
+        <circle cx="198" cy="562" r="1.8" fill="var(--line)"/>
+      </g>
+
+      <!-- remote interface -->
+      <g fill="var(--plate)" stroke="var(--line)" stroke-width="1.8">
+        <rect x="780" y="460" width="48" height="92" rx="10"/>
+        <rect x="790" y="470" width="28" height="14" rx="2"/>
+        <path d="M 804 496 l 8 12 h -16 Z M 804 536 l -8 -12 h 16 Z" fill="var(--line)" stroke="none"/>
+        <path d="M 770 462 A 14 14 0 0 1 784 448 M 762 462 A 22 22 0 0 1 784 440" fill="none" stroke-width="1.2"/>
+      </g>
+
+      <!-- leader lines + balloons -->
+      <g stroke="var(--ink)" stroke-width="1.2" fill="none">
+        <path d="M 52 84 L 92 112"/>     <!-- 1 housing -->
+        <path d="M 560 96 L 580 146"/>   <!-- 2 rail -->
+        <path d="M 44 182 L 107 154"/>   <!-- 3 motor -->
+        <path d="M 430 108 L 398 154"/>  <!-- 4 carrier -->
+        <path d="M 600 56 L 684 106"/>   <!-- 5 light sensor -->
+        <path d="M 300 64 L 181 122"/>   <!-- 6 computer -->
+        <path d="M 70 268 L 199 184"/>   <!-- 7 clock -->
+        <path d="M 830 120 L 776 148"/>  <!-- 8 end stops -->
+        <path d="M 60 470 L 120 522"/>   <!-- 9 power supply -->
+        <path d="M 868 420 L 814 464"/>  <!-- 10 remote -->
+      </g>
+      <g fill="var(--ink)">
+        <circle cx="92" cy="112" r="2.4"/><circle cx="580" cy="146" r="2.4"/>
+        <circle cx="107" cy="154" r="2.4"/><circle cx="398" cy="154" r="2.4"/>
+        <circle cx="684" cy="106" r="2.4"/><circle cx="181" cy="122" r="2.4"/>
+        <circle cx="199" cy="184" r="2.4"/><circle cx="776" cy="148" r="2.4"/>
+        <circle cx="120" cy="522" r="2.4"/><circle cx="814" cy="464" r="2.4"/>
+      </g>
+      <g font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="13" text-anchor="middle">
+        <g fill="var(--plate)" stroke="var(--ink)" stroke-width="1.4">
+          <circle cx="52" cy="84" r="13"/><circle cx="560" cy="96" r="13"/>
+          <circle cx="44" cy="182" r="13"/><circle cx="430" cy="108" r="13"/>
+          <circle cx="600" cy="56" r="13"/><circle cx="300" cy="64" r="13"/>
+          <circle cx="70" cy="268" r="13"/><circle cx="830" cy="120" r="13"/>
+          <circle cx="60" cy="470" r="13"/><circle cx="868" cy="420" r="13"/>
+        </g>
+        <g fill="var(--ink)">
+          <text x="52" y="88.5">1</text><text x="560" y="100.5">2</text>
+          <text x="44" y="186.5">3</text><text x="430" y="112.5">4</text>
+          <text x="600" y="60.5">5</text><text x="300" y="68.5">6</text>
+          <text x="70" y="272.5">7</text><text x="830" y="124.5">8</text>
+          <text x="60" y="474.5">9</text><text x="868" y="424.5">10</text>
+        </g>
+      </g>
+
+      <!-- inline part names beside balloons -->
+      <g font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="11.5" fill="var(--faint)" letter-spacing="1">
+        <text x="70" y="88">HOUSING</text>
+        <text x="578" y="100">RAIL</text>
+        <text x="44" y="210" text-anchor="middle">MOTOR</text>
+        <text x="448" y="112">CARRIER</text>
+        <text x="600" y="34" text-anchor="middle">LIGHT SENSOR</text>
+        <text x="318" y="68">COMPUTER</text>
+        <text x="70" y="296" text-anchor="middle">CLOCK</text>
+        <text x="830" y="98" text-anchor="middle">END STOPS</text>
+        <text x="60" y="498" text-anchor="middle">POWER</text>
+        <text x="868" y="398" text-anchor="middle">REMOTE</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="legend">
+    <div class="part"><span class="num">1</span><span class="name">Housing</span><span class="desc">drive enclosure at the rail head</span></div>
+    <div class="part"><span class="num">2</span><span class="name">Rail</span><span class="desc">track with toothed belt loop</span></div>
+    <div class="part"><span class="num">3</span><span class="name">Motor</span><span class="desc">quiet gearmotor driving the belt</span></div>
+    <div class="part"><span class="num">4</span><span class="name">Carrier</span><span class="desc">grippers on the leading curtain edges</span></div>
+    <div class="part"><span class="num">5</span><span class="name">Light sensor</span><span class="desc">dawn / dusk lux reading</span></div>
+    <div class="part"><span class="num">6</span><span class="name">Computer</span><span class="desc">logic + holiday-mode randomizer</span></div>
+    <div class="part"><span class="num">7</span><span class="name">Clock</span><span class="desc">real-time clock, survives power cuts</span></div>
+    <div class="part"><span class="num">8</span><span class="name">End stops</span><span class="desc">fully-open / fully-closed detection</span></div>
+    <div class="part"><span class="num">9</span><span class="name">Power supply</span><span class="desc">mains adapter with battery backup</span></div>
+    <div class="part"><span class="num">10</span><span class="name">Remote interface</span><span class="desc">holiday mode switch, manual override</span></div>
+  </div>
+
+  <div class="titleblock">
+    <span><strong>Curtain opener</strong> &middot; component layout</span>
+    <span>View: <strong>front elevation</strong></span>
+    <span>Scale: <strong>not to scale</strong></span>
+    <span>Sheet <strong>1 / 1</strong></span>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Business Central Customer Response Monitor</title>
+  <style>
+    :root {
+      --ink: #19353b;
+      --muted: #668087;
+      --paper: #f3f7f4;
+      --panel: #ffffff;
+      --green: #087f6b;
+      --green-soft: #dff5ed;
+      --blue: #156aa3;
+      --blue-soft: #e1f1fb;
+      --amber: #dc8a09;
+      --amber-soft: #fff1ce;
+      --red: #d84545;
+      --red-soft: #ffe4e1;
+      --line: #b8c9c8;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 12%, #dcefe8 0, transparent 30%),
+        radial-gradient(circle at 88% 85%, #deedf4 0, transparent 32%),
+        var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+    main { width: min(1460px, 100%); margin: auto; padding: 38px 24px 28px; }
+    header { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 22px; }
+    h1 { margin: 0; max-width: 780px; font-size: clamp(28px, 4vw, 50px); line-height: 1.02; letter-spacing: -0.045em; }
+    .eyebrow { margin: 0 0 10px; color: var(--green); font-size: 12px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+    .subtitle { max-width: 540px; margin: 0 0 5px; color: var(--muted); font-size: 15px; line-height: 1.55; }
+    .canvas { overflow-x: auto; border: 1px solid #cfddda; border-radius: 24px; background: rgba(255,255,255,.82); box-shadow: 0 20px 60px rgba(35,75,71,.11); }
+    svg { display: block; width: 100%; min-width: 1120px; height: auto; }
+    .card { fill: var(--panel); stroke: #c5d6d3; stroke-width: 1.5; filter: url(#shadow); }
+    .card-blue { fill: var(--blue-soft); stroke: #95c7e3; }
+    .card-green { fill: var(--green-soft); stroke: #8fcdbf; }
+    .card-amber { fill: var(--amber-soft); stroke: #efc46d; }
+    .card-red { fill: var(--red-soft); stroke: #e99b94; }
+    .title { fill: var(--ink); font-size: 17px; font-weight: 760; }
+    .label { fill: var(--muted); font-size: 12px; font-weight: 550; }
+    .small { fill: var(--muted); font-size: 11px; }
+    .code { fill: var(--ink); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 11px; }
+    .stage { fill: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .14em; }
+    .flow { fill: none; stroke: var(--green); stroke-width: 2.5; marker-end: url(#arrow); }
+    .flow-muted { fill: none; stroke: #7d9a9d; stroke-width: 2; stroke-dasharray: 6 5; marker-end: url(#arrow-muted); }
+    .flow-alert { fill: none; stroke: var(--red); stroke-width: 3; marker-end: url(#arrow-red); }
+    .pulse { animation: pulse 1.8s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+    .packet { fill: var(--green); filter: url(#glow); }
+    .packet.one { offset-path: path("M 285 287 C 325 287 342 287 378 287"); animation: travel 3s linear infinite; }
+    .packet.two { offset-path: path("M 605 287 C 645 287 662 287 698 287"); animation: travel 3s linear .8s infinite; }
+    @keyframes travel { from { offset-distance: 0%; opacity: 0; } 12%, 88% { opacity: 1; } to { offset-distance: 100%; opacity: 0; } }
+    @keyframes pulse { 0%,100% { opacity: .7; transform: scale(.92); } 50% { opacity: 1; transform: scale(1.08); } }
+    footer { display: flex; flex-wrap: wrap; gap: 20px; padding: 18px 4px 0; color: var(--muted); font-size: 12px; }
+    .key { display: flex; align-items: center; gap: 7px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); }
+    .dot.amber { background: var(--amber); }
+    .dot.red { background: var(--red); }
+    @media (max-width: 760px) { header { display: block; } .subtitle { margin-top: 14px; } main { padding: 24px 12px; } }
+    @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <p class="eyebrow">IT project architecture</p>
+      <h1>Customer Response-Time Monitor</h1>
+    </div>
+    <p class="subtitle">Monitor open customer interactions in Microsoft Dynamics 365 Business Central, measure employee response time, and raise a clear signal before service commitments are missed.</p>
+  </header>
+
+  <section class="canvas" aria-label="Response-time monitoring architecture diagram">
+    <svg viewBox="0 0 1400 760" role="img" aria-labelledby="svgTitle svgDesc">
+      <title id="svgTitle">Business Central customer response-time monitoring flow</title>
+      <desc id="svgDesc">Customer interactions enter Business Central. An event connector sends cases to a timer and policy engine. Responses close timers, while overdue cases raise notifications and appear on a dashboard.</desc>
+      <defs>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#224d4b" flood-opacity=".11"/></filter>
+        <filter id="glow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#087f6b"/></marker>
+        <marker id="arrow-muted" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#7d9a9d"/></marker>
+        <marker id="arrow-red" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#d84545"/></marker>
+      </defs>
+
+      <text x="80" y="78" class="stage">01 · REQUEST</text>
+      <text x="378" y="78" class="stage">02 · ERP RECORD</text>
+      <text x="698" y="78" class="stage">03 · MONITOR</text>
+      <text x="1025" y="78" class="stage">04 · SIGNAL &amp; ACTION</text>
+
+      <!-- Customer -->
+      <rect x="80" y="105" width="205" height="365" rx="18" class="card"/>
+      <circle cx="182" cy="168" r="36" fill="#e8f1ef"/>
+      <circle cx="182" cy="158" r="12" fill="#668087"/>
+      <path d="M156 191c4-18 48-18 52 0" fill="#668087"/>
+      <text x="182" y="231" text-anchor="middle" class="title">Customer</text>
+      <text x="182" y="254" text-anchor="middle" class="label">asks for help</text>
+      <rect x="108" y="286" width="148" height="42" rx="10" fill="#f4f7f6"/>
+      <text x="124" y="311" class="label">✉ Email</text>
+      <rect x="108" y="339" width="148" height="42" rx="10" fill="#f4f7f6"/>
+      <text x="124" y="364" class="label">☎ Phone / Teams</text>
+      <rect x="108" y="392" width="148" height="42" rx="10" fill="#f4f7f6"/>
+      <text x="124" y="417" class="label">▣ Service request</text>
+
+      <!-- Business Central -->
+      <rect x="378" y="105" width="227" height="365" rx="18" class="card card-blue"/>
+      <rect x="410" y="140" width="163" height="64" rx="12" fill="#156aa3"/>
+      <text x="491" y="168" text-anchor="middle" fill="white" font-size="15" font-weight="750">Dynamics 365</text>
+      <text x="491" y="188" text-anchor="middle" fill="white" font-size="12">Business Central</text>
+      <text x="410" y="239" class="title">Interaction record</text>
+      <text x="410" y="267" class="label">Customer + owner</text>
+      <text x="410" y="290" class="label">Created timestamp</text>
+      <text x="410" y="313" class="label">Priority + status</text>
+      <text x="410" y="336" class="label">First-response timestamp</text>
+      <line x1="410" y1="360" x2="573" y2="360" stroke="#95c7e3"/>
+      <text x="410" y="389" class="small">Event connector</text>
+      <text x="410" y="412" class="code">case.created</text>
+      <text x="410" y="433" class="code">case.responded</text>
+
+      <!-- Monitoring engine -->
+      <rect x="698" y="105" width="250" height="365" rx="18" class="card card-green"/>
+      <circle cx="823" cy="181" r="49" fill="#fff" stroke="#8fcdbf" stroke-width="4"/>
+      <line x1="823" y1="181" x2="823" y2="150" stroke="#087f6b" stroke-width="4" stroke-linecap="round"/>
+      <line x1="823" y1="181" x2="849" y2="194" stroke="#087f6b" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="823" cy="181" r="5" fill="#087f6b"/>
+      <text x="823" y="262" text-anchor="middle" class="title">SLA timer &amp; policy</text>
+      <rect x="730" y="287" width="186" height="44" rx="10" fill="#fff"/>
+      <text x="747" y="307" class="small">Standard customer</text>
+      <text x="895" y="316" text-anchor="end" class="title" fill="#087f6b">2h</text>
+      <rect x="730" y="341" width="186" height="44" rx="10" fill="#fff"/>
+      <text x="747" y="361" class="small">Priority customer</text>
+      <text x="895" y="370" text-anchor="end" class="title" fill="#dc8a09">30m</text>
+      <text x="730" y="414" class="code">elapsed = now − created</text>
+      <text x="730" y="438" class="code">if elapsed &gt; limit → signal</text>
+
+      <!-- Signal -->
+      <rect x="1025" y="105" width="295" height="365" rx="18" class="card card-red"/>
+      <g class="pulse">
+        <path d="M1092 199h75l-37.5-65z" fill="#d84545"/>
+        <rect x="1126" y="157" width="7" height="23" rx="3" fill="white"/>
+        <circle cx="1129.5" cy="188" r="4" fill="white"/>
+      </g>
+      <text x="1191" y="152" class="title">Response overdue</text>
+      <text x="1191" y="176" class="label">Case BC-10482 · 2h 17m</text>
+      <text x="1191" y="198" class="label">Owner: Service team</text>
+      <rect x="1057" y="240" width="231" height="48" rx="11" fill="#fff"/>
+      <circle cx="1080" cy="264" r="8" fill="#d84545"/>
+      <text x="1099" y="269" class="label">Teams / email alert</text>
+      <rect x="1057" y="299" width="231" height="48" rx="11" fill="#fff"/>
+      <circle cx="1080" cy="323" r="8" fill="#dc8a09"/>
+      <text x="1099" y="328" class="label">Escalate to team lead</text>
+      <rect x="1057" y="358" width="231" height="48" rx="11" fill="#fff"/>
+      <circle cx="1080" cy="382" r="8" fill="#156aa3"/>
+      <text x="1099" y="387" class="label">Update ERP signal status</text>
+      <text x="1057" y="439" class="small">Signal closes when a valid response is logged.</text>
+
+      <!-- Main flow -->
+      <path d="M285 287 C325 287 342 287 378 287" class="flow"/>
+      <path d="M605 287 C645 287 662 287 698 287" class="flow"/>
+      <path d="M948 287 C980 287 992 287 1025 287" class="flow-alert"/>
+      <circle r="5" class="packet one"/>
+      <circle r="5" class="packet two"/>
+
+      <!-- Feedback and dashboard -->
+      <rect x="378" y="555" width="570" height="130" rx="18" class="card"/>
+      <text x="410" y="588" class="stage">MANAGEMENT VIEW</text>
+      <text x="410" y="620" class="title">Response performance dashboard</text>
+      <text x="410" y="647" class="label">Median response</text>
+      <text x="525" y="647" class="title">24m</text>
+      <text x="600" y="647" class="label">Within SLA</text>
+      <text x="685" y="647" class="title" fill="#087f6b">93%</text>
+      <text x="758" y="647" class="label">Open signals</text>
+      <text x="855" y="647" class="title" fill="#d84545">7</text>
+      <rect x="980" y="555" width="340" height="130" rx="18" class="card card-amber"/>
+      <text x="1012" y="588" class="stage">CONTROL</text>
+      <text x="1012" y="620" class="title">Team lead reviews exceptions</text>
+      <text x="1012" y="647" class="label">Reassign · contact · resolve · improve policy</text>
+      <path d="M1172 470 L1172 535 C1172 546 1160 555 1148 555" class="flow-alert"/>
+      <path d="M980 620 C960 620 962 620 948 620" class="flow-muted"/>
+      <path d="M698 555 C698 515 605 515 552 470" class="flow-muted"/>
+      <text x="581" y="520" class="small">response closes timer</text>
+    </svg>
+  </section>
+
+  <footer>
+    <span class="key"><span class="dot"></span> normal event flow</span>
+    <span class="key"><span class="dot amber"></span> nearing threshold</span>
+    <span class="key"><span class="dot red"></span> overdue signal and escalation</span>
+    <span>Thresholds should follow business hours, priority, customer contract, and team calendar.</span>
+  </footer>
+</main>
+</body>
+</html>

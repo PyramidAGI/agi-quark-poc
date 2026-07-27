@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Tree Puller Component Drawing</title>
+<style>
+  :root {
+    --paper: #f4f6f8;
+    --plate: #fbfcfd;
+    --ink: #22303d;
+    --line: #4a5d70;
+    --faint: #94a5b5;
+    --grid: rgba(74, 93, 112, 0.10);
+    --accent: #d9531e;
+    --accent-soft: rgba(217, 83, 30, 0.14);
+    --edge: #ccd5dd;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0f151b;
+      --plate: #151d25;
+      --ink: #dde5ec;
+      --line: #9db0c2;
+      --faint: #6c7f91;
+      --grid: rgba(157, 176, 194, 0.10);
+      --accent: #ff7a45;
+      --accent-soft: rgba(255, 122, 69, 0.16);
+      --edge: #2b3946;
+    }
+  }
+  :root[data-theme="light"] {
+    --paper: #f4f6f8;
+    --plate: #fbfcfd;
+    --ink: #22303d;
+    --line: #4a5d70;
+    --faint: #94a5b5;
+    --grid: rgba(74, 93, 112, 0.10);
+    --accent: #d9531e;
+    --accent-soft: rgba(217, 83, 30, 0.14);
+    --edge: #ccd5dd;
+  }
+  :root[data-theme="dark"] {
+    --paper: #0f151b;
+    --plate: #151d25;
+    --ink: #dde5ec;
+    --line: #9db0c2;
+    --faint: #6c7f91;
+    --grid: rgba(157, 176, 194, 0.10);
+    --accent: #ff7a45;
+    --accent-soft: rgba(255, 122, 69, 0.16);
+    --edge: #2b3946;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+  }
+  .sheet {
+    max-width: 1020px;
+    margin: 0 auto;
+    padding: 40px 24px 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  header .eyebrow {
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  header h1 {
+    margin: 6px 0 0;
+    font-size: 1.6rem;
+    font-weight: 650;
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+  }
+  header p {
+    margin: 4px 0 0;
+    color: var(--faint);
+    font-size: 0.92rem;
+    max-width: 60ch;
+  }
+
+  .plate {
+    background: var(--plate);
+    border: 1px solid var(--edge);
+    border-radius: 4px;
+    padding: 10px;
+    overflow-x: auto;
+  }
+  .plate svg { display: block; width: 100%; height: auto; min-width: 640px; }
+
+  .legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 8px 24px;
+    padding: 4px 2px;
+  }
+  .legend .part {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 0.9rem;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--edge);
+  }
+  .legend .num {
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: 0.78rem;
+    color: var(--accent);
+    flex: 0 0 1.4em;
+  }
+  .legend .name {
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    flex: 0 0 auto;
+  }
+  .legend .desc { color: var(--faint); font-size: 0.82rem; }
+
+  .titleblock {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 28px;
+    justify-content: space-between;
+    border-top: 2px solid var(--line);
+    padding-top: 8px;
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .titleblock strong { color: var(--ink); font-weight: 600; }
+</style>
+
+<div class="sheet">
+  <header>
+    <div class="eyebrow">Technical illustration &middot; Dwg 003-A</div>
+    <h1>Heath Tree Extraction Rig &mdash; Component Layout</h1>
+    <p>Side elevation, cutaway. Cut stems are winched out of the peat on an aluminium sled and transferred to the truck bed. Haul line (2, 10, 11) highlighted in orange; buried and in-body parts shown as hidden detail.</p>
+  </header>
+
+  <div class="plate">
+    <svg viewBox="0 0 1000 640" role="img" aria-label="Side-elevation drawing of a tree extraction rig: a small flatbed truck with an electric winch pulling a loaded aluminium sled across a heath, with numbered callouts for truck, pulley, battery, computer, ground anchor, load bed, sled, runners, bunk, choker, cable, camera and remote">
+      <defs>
+        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M 20 0 L 0 0 0 20" fill="none" stroke="var(--grid)" stroke-width="1"/>
+        </pattern>
+        <pattern id="soil" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <path d="M 0 0 V 10" fill="none" stroke="var(--grid)" stroke-width="1.4"/>
+        </pattern>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--faint)"/>
+        </marker>
+      </defs>
+      <rect x="0" y="0" width="1000" height="640" fill="url(#grid)"/>
+
+      <!-- ===== ground: heath left, firm track right ===== -->
+      <rect x="24" y="482" width="952" height="46" fill="url(#soil)"/>
+      <path d="M 24 482 L 976 482" stroke="var(--line)" stroke-width="2"/>
+      <line x1="616" y1="482" x2="616" y2="528" stroke="var(--faint)" stroke-width="1" stroke-dasharray="4 4"/>
+
+      <!-- heather tufts -->
+      <g stroke="var(--line)" stroke-width="1.2" fill="none">
+        <path d="M 70 482 L 70 470 M 70 476 L 62 468 M 70 476 L 78 468"/>
+        <path d="M 112 482 L 112 472 M 112 477 L 105 470 M 112 477 L 119 470"/>
+        <path d="M 486 482 L 486 470 M 486 476 L 478 468 M 486 476 L 494 468"/>
+        <path d="M 532 482 L 532 473 M 532 478 L 525 471 M 532 478 L 539 471"/>
+        <path d="M 596 482 L 596 471 M 596 477 L 589 469 M 596 477 L 603 469"/>
+      </g>
+      <!-- cut stumps (source of the stems) -->
+      <g fill="var(--plate)" stroke="var(--line)" stroke-width="1.4">
+        <path d="M 88 482 L 90 468 L 102 468 L 104 482 Z"/>
+        <ellipse cx="96" cy="468" rx="6" ry="2.4"/>
+        <path d="M 558 482 L 560 470 L 572 470 L 574 482 Z"/>
+        <ellipse cx="566" cy="470" rx="6" ry="2.4"/>
+      </g>
+      <!-- ground zone labels -->
+      <g font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="10" letter-spacing="1.4" text-anchor="middle">
+        <rect x="348" y="498" width="164" height="15" fill="var(--plate)"/>
+        <text x="430" y="509" fill="var(--faint)">HEATH &middot; SOFT PEAT</text>
+        <rect x="824" y="498" width="112" height="15" fill="var(--plate)"/>
+        <text x="880" y="509" fill="var(--faint)">FIRM TRACK</text>
+      </g>
+
+      <!-- ===== sled assembly ===== -->
+      <!-- stems: butt ends to the right, tops trailing left onto the ground -->
+      <g fill="var(--plate)" stroke="var(--line)" stroke-width="1.6" stroke-linejoin="round">
+        <path d="M 414 440 L 220 442 L 130 470 L 133 478 L 224 456 L 414 456 Z"/>
+        <path d="M 414 424 L 214 424 L 150 430 L 150 435 L 214 440 L 414 440 Z"/>
+        <path d="M 410 410 L 240 410 L 186 415 L 186 420 L 240 424 L 410 424 Z"/>
+      </g>
+      <g stroke="var(--line)" stroke-width="1.3" fill="none">
+        <path d="M 252 442 L 240 432 M 196 449 L 184 442 M 300 424 L 292 414 M 340 410 L 332 401"/>
+      </g>
+      <!-- sawn butt ends -->
+      <g fill="var(--plate)" stroke="var(--line)" stroke-width="1.4">
+        <ellipse cx="414" cy="448" rx="5" ry="8"/>
+        <ellipse cx="414" cy="432" rx="5" ry="8"/>
+        <ellipse cx="410" cy="417" rx="4.5" ry="7"/>
+      </g>
+
+      <!-- choker chain around the load -->
+      <g stroke="var(--accent)" stroke-width="2" fill="none" stroke-linejoin="round">
+        <path d="M 284 460 L 284 414 Q 284 404 294 404 L 306 404 Q 316 404 316 414 L 316 460"/>
+        <path d="M 280 424 h 8 M 280 440 h 8 M 312 424 h 8 M 312 440 h 8 M 292 400 v 8 M 308 400 v 8"/>
+      </g>
+      <circle cx="300" cy="396" r="4.5" fill="var(--plate)" stroke="var(--accent)" stroke-width="1.8"/>
+
+      <!-- runners (aluminium skids) -->
+      <path d="M 176 482 L 428 482 Q 450 482 452 460 L 442 456 Q 440 472 428 472 L 176 472 Z"
+            fill="var(--plate)" stroke="var(--line)" stroke-width="2" stroke-linejoin="round"/>
+      <!-- bolsters + bunk stakes -->
+      <g fill="var(--plate)" stroke="var(--line)" stroke-width="1.8" stroke-linejoin="round">
+        <rect x="208" y="456" width="22" height="16"/>
+        <rect x="384" y="456" width="22" height="16"/>
+        <rect x="213" y="406" width="9" height="50"/>
+        <rect x="389" y="406" width="9" height="50"/>
+      </g>
+      <!-- bridle ring / shackle -->
+      <g stroke="var(--accent)" stroke-width="2" fill="none">
+        <circle cx="474" cy="446" r="7"/>
+        <path d="M 468 449 L 452 458"/>
+        <rect x="460" y="441" width="7" height="10" rx="2" fill="var(--plate)"/>
+      </g>
+
+      <!-- ===== truck assembly ===== -->
+      <!-- chassis + bed floor -->
+      <g fill="var(--plate)" stroke="var(--line)" stroke-width="2" stroke-linejoin="round">
+        <rect x="640" y="396" width="292" height="20"/>
+        <rect x="852" y="300" width="78" height="102" rx="4"/>
+      </g>
+      <!-- cab detail -->
+      <g stroke="var(--line)" stroke-width="1.4" fill="none">
+        <path d="M 906 308 L 928 350 L 906 350 Z"/>
+        <path d="M 852 360 L 852 396 M 896 350 L 896 396"/>
+        <path d="M 930 372 h 8 M 930 388 h 8"/>
+      </g>
+      <!-- bed stakes -->
+      <g fill="var(--plate)" stroke="var(--line)" stroke-width="1.8">
+        <rect x="643" y="336" width="7" height="60"/>
+        <rect x="741" y="336" width="7" height="60"/>
+        <rect x="841" y="326" width="9" height="70"/>
+      </g>
+      <!-- transferred stems on the bed -->
+      <g fill="var(--plate)" stroke="var(--line)" stroke-width="1.6">
+        <rect x="654" y="380" width="186" height="16" rx="8"/>
+        <rect x="654" y="364" width="186" height="16" rx="8"/>
+        <rect x="668" y="348" width="158" height="16" rx="8"/>
+        <ellipse cx="840" cy="388" rx="4.5" ry="8"/>
+        <ellipse cx="840" cy="372" rx="4.5" ry="8"/>
+        <ellipse cx="826" cy="356" rx="4.5" ry="8"/>
+      </g>
+      <!-- wheels -->
+      <g fill="var(--plate)" stroke="var(--line)" stroke-width="2.2">
+        <circle cx="700" cy="452" r="30"/>
+        <circle cx="880" cy="452" r="30"/>
+      </g>
+      <g fill="var(--plate)" stroke="var(--line)" stroke-width="1.5">
+        <circle cx="700" cy="452" r="10"/>
+        <circle cx="880" cy="452" r="10"/>
+      </g>
+      <!-- centrelines on rotating parts (dash-dot, engineering convention) -->
+      <g stroke="var(--faint)" stroke-width="1" stroke-dasharray="12 4 2 4">
+        <path d="M 660 452 H 740 M 700 412 V 492"/>
+        <path d="M 840 452 H 920 M 880 412 V 492"/>
+        <path d="M 640 384 H 696 M 668 356 V 412"/>
+      </g>
+
+      <!-- electric winch: drum + motor + fairlead -->
+      <g fill="var(--plate)" stroke="var(--line)" stroke-width="1.8">
+        <rect x="654" y="392" width="28" height="8"/>
+      </g>
+      <circle cx="668" cy="384" r="17" fill="var(--plate)" stroke="var(--accent)" stroke-width="2.2"/>
+      <circle cx="668" cy="384" r="7" fill="none" stroke="var(--accent)" stroke-width="1.4"/>
+      <g fill="var(--plate)" stroke="var(--line)" stroke-width="1.6">
+        <rect x="686" y="372" width="30" height="24" rx="6"/>
+        <path d="M 692 372 v 24 M 700 372 v 24 M 708 372 v 24"/>
+      </g>
+      <circle cx="646" cy="326" r="6" fill="var(--plate)" stroke="var(--accent)" stroke-width="1.8"/>
+
+      <!-- battery (hidden detail, slung under the bed) -->
+      <g stroke="var(--line)" stroke-width="1.5" fill="none" stroke-dasharray="6 4">
+        <rect x="760" y="418" width="52" height="30" rx="2"/>
+      </g>
+      <g stroke="var(--line)" stroke-width="1.4" fill="none">
+        <path d="M 770 418 v -5 h 8 v 5 M 796 418 v -5 h 8 v 5"/>
+        <path d="M 790 426 L 780 438 h 9 L 782 448" stroke-linejoin="round"/>
+      </g>
+
+      <!-- computer (in cab) -->
+      <g stroke="var(--line)" stroke-width="1.5" fill="none">
+        <rect x="860" y="316" width="28" height="22" rx="2"/>
+        <g stroke-width="1.1">
+          <path d="M 860 322 h -6 M 860 330 h -6 M 888 322 h 6 M 888 330 h 6"/>
+        </g>
+      </g>
+
+      <!-- camera on mast -->
+      <g fill="var(--plate)" stroke="var(--line)" stroke-width="1.8" stroke-linejoin="round">
+        <rect x="855" y="268" width="6" height="34"/>
+        <rect x="846" y="248" width="32" height="20" rx="2"/>
+        <path d="M 846 253 L 834 249 L 834 267 L 846 263 Z"/>
+      </g>
+      <g stroke="var(--faint)" stroke-width="1" stroke-dasharray="5 5" fill="none">
+        <path d="M 832 252 L 744 284 M 832 264 L 744 320"/>
+      </g>
+
+      <!-- ground anchor (spade, buried portion hidden) -->
+      <g fill="none" stroke="var(--line)" stroke-width="2" stroke-linejoin="round">
+        <path d="M 642 412 L 606 470"/>
+        <path d="M 636 416 L 618 444"/>
+      </g>
+      <circle cx="642" cy="412" r="3.5" fill="var(--plate)" stroke="var(--line)" stroke-width="1.4"/>
+      <path d="M 606 470 L 618 476 L 600 516 L 592 508 Z" fill="none" stroke="var(--line)" stroke-width="1.8" stroke-dasharray="7 4" stroke-linejoin="round"/>
+
+      <!-- ===== haul line ===== -->
+      <path d="M 672 368 L 648 328 L 474 442" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linejoin="round"/>
+
+      <!-- direction of haul -->
+      <line x1="486" y1="276" x2="606" y2="276" stroke="var(--faint)" stroke-width="1.4" marker-end="url(#arrow)"/>
+      <text x="546" y="266" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="10" letter-spacing="1.4" fill="var(--faint)" text-anchor="middle">DIRECTION OF HAUL</text>
+
+      <!-- ===== operator remote (schematic, off-body) ===== -->
+      <g fill="var(--plate)" stroke="var(--line)" stroke-width="1.8" stroke-linejoin="round">
+        <rect x="372" y="250" width="32" height="56" rx="5"/>
+        <path d="M 396 250 L 396 232"/>
+      </g>
+      <g stroke="var(--line)" stroke-width="1.3" fill="none">
+        <rect x="379" y="258" width="18" height="12" rx="1.5"/>
+        <circle cx="384" cy="284" r="3.5"/>
+        <circle cx="394" cy="284" r="3.5"/>
+        <circle cx="384" cy="296" r="3.5"/>
+        <circle cx="394" cy="296" r="3.5"/>
+      </g>
+      <g stroke="var(--faint)" stroke-width="1.2" fill="none">
+        <path d="M 406 256 A 9 9 0 0 1 406 274"/>
+        <path d="M 412 250 A 17 17 0 0 1 412 280"/>
+        <path d="M 418 244 A 25 25 0 0 1 418 286"/>
+      </g>
+
+      <!-- ===== leader lines + balloons ===== -->
+      <g stroke="var(--ink)" stroke-width="1.2" fill="none">
+        <path d="M 946 244 L 928 306"/>   <!-- 1 truck -->
+        <path d="M 565 444 L 651 386"/>   <!-- 2 pulley -->
+        <path d="M 800 553 L 786 450"/>   <!-- 3 battery -->
+        <path d="M 898 191 L 889 318"/>   <!-- 4 computer -->
+        <path d="M 654 556 L 602 500"/>   <!-- 5 ground anchor -->
+        <path d="M 694 152 L 744 336"/>   <!-- 6 load bed -->
+        <path d="M 158 554 L 214 464"/>   <!-- 7 sled -->
+        <path d="M 326 553 L 302 480"/>   <!-- 8 runners -->
+        <path d="M 446 162 L 396 404"/>   <!-- 9 bunk -->
+        <path d="M 256 164 L 298 392"/>   <!-- 10 choker -->
+        <path d="M 564 323 L 538 399"/>   <!-- 11 cable -->
+        <path d="M 790 161 L 844 250"/>   <!-- 12 camera -->
+        <path d="M 340 200 L 376 252"/>   <!-- 13 remote -->
+      </g>
+      <g fill="var(--ink)">
+        <circle cx="928" cy="306" r="2.4"/><circle cx="651" cy="386" r="2.4"/>
+        <circle cx="786" cy="450" r="2.4"/><circle cx="889" cy="318" r="2.4"/>
+        <circle cx="602" cy="500" r="2.4"/><circle cx="744" cy="336" r="2.4"/>
+        <circle cx="214" cy="464" r="2.4"/><circle cx="302" cy="480" r="2.4"/>
+        <circle cx="396" cy="404" r="2.4"/><circle cx="298" cy="392" r="2.4"/>
+        <circle cx="538" cy="399" r="2.4"/><circle cx="844" cy="250" r="2.4"/>
+        <circle cx="376" cy="252" r="2.4"/>
+      </g>
+      <g font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="13" text-anchor="middle">
+        <g fill="var(--plate)" stroke="var(--ink)" stroke-width="1.4">
+          <circle cx="958" cy="236" r="13"/><circle cx="552" cy="450" r="13"/>
+          <circle cx="800" cy="566" r="13"/><circle cx="900" cy="178" r="13"/>
+          <circle cx="662" cy="566" r="13"/><circle cx="690" cy="140" r="13"/>
+          <circle cx="150" cy="566" r="13"/><circle cx="330" cy="566" r="13"/>
+          <circle cx="452" cy="150" r="13"/><circle cx="250" cy="152" r="13"/>
+          <circle cx="570" cy="312" r="13"/><circle cx="784" cy="150" r="13"/>
+          <circle cx="330" cy="190" r="13"/>
+        </g>
+        <g fill="var(--ink)">
+          <text x="958" y="240.5">1</text><text x="552" y="454.5">2</text>
+          <text x="800" y="570.5">3</text><text x="900" y="182.5">4</text>
+          <text x="662" y="570.5">5</text><text x="690" y="144.5">6</text>
+          <text x="150" y="570.5">7</text><text x="330" y="570.5">8</text>
+          <text x="452" y="154.5">9</text><text x="250" y="156.5">10</text>
+          <text x="570" y="316.5">11</text><text x="784" y="154.5">12</text>
+          <text x="330" y="194.5">13</text>
+        </g>
+      </g>
+
+      <!-- inline part names beside balloons -->
+      <g font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="11.5" fill="var(--faint)" letter-spacing="1" text-anchor="middle">
+        <text x="958" y="214">TRUCK</text>
+        <text x="508" y="454" text-anchor="end">PULLEY</text>
+        <text x="800" y="592">BATTERY</text>
+        <text x="900" y="158">COMPUTER</text>
+        <text x="662" y="592">GROUND ANCHOR</text>
+        <text x="690" y="118">LOAD BED</text>
+        <text x="150" y="592">SLED</text>
+        <text x="330" y="592">RUNNERS</text>
+        <text x="452" y="130">BUNK</text>
+        <text x="250" y="132">CHOKER</text>
+        <text x="570" y="292">CABLE</text>
+        <text x="784" y="130">CAMERA</text>
+        <text x="330" y="170">REMOTE</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="legend">
+    <div class="part"><span class="num">1</span><span class="name">Truck</span><span class="desc">small flatbed; anchor mass and transport</span></div>
+    <div class="part"><span class="num">2</span><span class="name">Pulley</span><span class="desc">electric winch drum, motor and fairlead</span></div>
+    <div class="part"><span class="num">3</span><span class="name">Battery</span><span class="desc">traction pack under the bed, feeds the winch</span></div>
+    <div class="part"><span class="num">4</span><span class="name">Computer</span><span class="desc">haul controller in the cab</span></div>
+    <div class="part"><span class="num">5</span><span class="name">Ground anchor</span><span class="desc">spade driven into the peat, takes the pull</span></div>
+    <div class="part"><span class="num">6</span><span class="name">Load bed</span><span class="desc">stake rack; stems transferred off the sled</span></div>
+    <div class="part"><span class="num">7</span><span class="name">Sled</span><span class="desc">aluminium boat, floats the load over soft ground</span></div>
+    <div class="part"><span class="num">8</span><span class="name">Runners</span><span class="desc">upturned skids, low drag on heather and peat</span></div>
+    <div class="part"><span class="num">9</span><span class="name">Bunk</span><span class="desc">bolsters and stakes holding the stems on deck</span></div>
+    <div class="part"><span class="num">10</span><span class="name">Choker</span><span class="desc">chain binding the load to the bunk</span></div>
+    <div class="part"><span class="num">11</span><span class="name">Cable</span><span class="desc">main line, fairlead to sled bridle</span></div>
+    <div class="part"><span class="num">12</span><span class="name">Camera</span><span class="desc">mast-mounted, watches the haul path</span></div>
+    <div class="part"><span class="num">13</span><span class="name">Remote</span><span class="desc">operator handheld, manual override</span></div>
+  </div>
+
+  <div class="titleblock">
+    <span><strong>Tree puller</strong> &middot; component layout</span>
+    <span>View: <strong>side elevation</strong></span>
+    <span>Scale: <strong>not to scale</strong></span>
+    <span>Sheet <strong>1 / 1</strong></span>
+  </div>
+</div>
+
+</body>
+</html>

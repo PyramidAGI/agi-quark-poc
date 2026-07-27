@@ -1,0 +1,134 @@
+{
+  "name": "business-central-response-monitor",
+  "goal": "normal waitfor event reward organization",
+  "sensor": "transaction event data time",
+  "actuator": "channel radiation group",
+  "control": "val time conflict pref",
+  "plan": "sequence waitfor event fork",
+  "navigate": "channel organization group",
+  "children": [
+    {
+      "name": "customer-request-capture",
+      "goal": "bond transaction data",
+      "sensor": "channel event transaction emo",
+      "actuator": "container data bond",
+      "control": "val conflict fix",
+      "plan": "",
+      "navigate": "channel",
+      "children": []
+    },
+    {
+      "name": "business-central-interaction",
+      "goal": "container transaction data stat clear",
+      "sensor": "transaction event data",
+      "actuator": "container data bond group",
+      "control": "val own conflict fix",
+      "plan": "sequence data time",
+      "navigate": "organization group",
+      "children": [
+        {
+          "name": "case-created-event",
+          "goal": "event data time bond",
+          "sensor": "transaction event",
+          "actuator": "channel data time",
+          "control": "val",
+          "plan": "",
+          "navigate": "",
+          "children": []
+        },
+        {
+          "name": "case-response-event",
+          "goal": "normal waitfor event",
+          "sensor": "event data time bond",
+          "actuator": "channel event normal",
+          "control": "val own",
+          "plan": "",
+          "navigate": "",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "response-time-monitor",
+      "goal": "normal time waitfor event",
+      "sensor": "event time data",
+      "actuator": "stat mode fork",
+      "control": "val time pref conflict",
+      "plan": "waitfor event sequence",
+      "navigate": "fork",
+      "children": [
+        {
+          "name": "elapsed-time-timer",
+          "goal": "val time",
+          "sensor": "event time",
+          "actuator": "val stat",
+          "control": "increase time waitfor",
+          "plan": "",
+          "navigate": "",
+          "children": []
+        },
+        {
+          "name": "sla-policy",
+          "goal": "normal contract time",
+          "sensor": "val time contract pref",
+          "actuator": "mode stat high stat normal",
+          "control": "conflict val dominate",
+          "plan": "",
+          "navigate": "fork",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "overdue-signal",
+      "goal": "solve problem stat high",
+      "sensor": "time conflict stat high waitfor",
+      "actuator": "radiation channel event",
+      "control": "val normal",
+      "plan": "fork channel group",
+      "navigate": "organization group",
+      "children": [
+        {
+          "name": "user-notification",
+          "goal": "data stat clear",
+          "sensor": "radiation event data",
+          "actuator": "channel data",
+          "control": "",
+          "plan": "",
+          "navigate": "channel",
+          "children": []
+        },
+        {
+          "name": "team-lead-escalation",
+          "goal": "solve problem organization",
+          "sensor": "radiation waitfor event conflict",
+          "actuator": "channel group fork bond",
+          "control": "pref dominate own",
+          "plan": "sequence group solve",
+          "navigate": "organization group",
+          "children": []
+        },
+        {
+          "name": "signal-closure",
+          "goal": "normal waitfor event",
+          "sensor": "event bond time",
+          "actuator": "fix stat normal",
+          "control": "val own",
+          "plan": "",
+          "navigate": "",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "response-dashboard",
+      "goal": "pattern data reward organization",
+      "sensor": "event data time stat high normal",
+      "actuator": "compress data pattern group",
+      "control": "val conflict stat clear",
+      "plan": "sequence data pattern",
+      "navigate": "organization group",
+      "children": []
+    }
+  ]
+}

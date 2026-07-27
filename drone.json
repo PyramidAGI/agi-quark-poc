@@ -1,0 +1,93 @@
+{
+  "name": "drone",
+  "goal": "transport payload loc target",
+  "sensor": "",
+  "actuator": "force air",
+  "control": "conflict val normal",
+  "plan": "sequence loc",
+  "navigate": "loc waitfor event",
+  "children": [
+    {
+      "name": "body",
+      "goal": "hold group",
+      "sensor": "force stat vibration",
+      "actuator": "",
+      "control": "stat heavy",
+      "plan": "",
+      "navigate": "",
+      "children": [
+        {
+          "name": "radar",
+          "goal": "data pattern obstacle",
+          "sensor": "radiation pattern loc",
+          "actuator": "",
+          "control": "stat near -> alert computer",
+          "plan": "pattern",
+          "navigate": "waitfor event",
+          "children": []
+        },
+        {
+          "name": "computer",
+          "goal": "solve problem",
+          "sensor": "data event",
+          "actuator": "compress data pattern",
+          "control": "conflict",
+          "plan": "sequence",
+          "navigate": "fork",
+          "children": []
+        },
+        {
+          "name": "battery",
+          "goal": "energy stat full",
+          "sensor": "val charge stat empty",
+          "actuator": "",
+          "control": "stat low -> loc home",
+          "plan": "",
+          "navigate": "",
+          "children": []
+        },
+        {
+          "name": "payload",
+          "goal": "transport stat safe",
+          "sensor": "stat heavy",
+          "actuator": "release",
+          "control": "force stat heavy",
+          "plan": "",
+          "navigate": "loc target",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "wings",
+      "goal": "lift",
+      "sensor": "force air",
+      "actuator": "force lift",
+      "control": "val normal",
+      "plan": "",
+      "navigate": "",
+      "children": [
+        {
+          "name": "engines",
+          "goal": "force thrust",
+          "sensor": "stat hot stat speed",
+          "actuator": "force thrust",
+          "control": "stat hot -> stat slow",
+          "plan": "sequence speed",
+          "navigate": "",
+          "children": []
+        },
+        {
+          "name": "ailerons",
+          "goal": "fix stat level",
+          "sensor": "force",
+          "actuator": "force roll",
+          "control": "fix stat fast",
+          "plan": "",
+          "navigate": "",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

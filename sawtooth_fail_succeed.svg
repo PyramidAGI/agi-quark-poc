@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 300" width="500" height="300" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="500" height="300" fill="#ffffff"/>
+
+  <!-- axes -->
+  <line x1="40" y1="20" x2="40" y2="260" stroke="#9aa3af" stroke-width="1.5"/>
+  <line x1="40" y1="260" x2="470" y2="260" stroke="#9aa3af" stroke-width="1.5"/>
+
+  <!-- sawtooth path: monotonically rising peaks and troughs -->
+  <polyline points="
+      40,260
+      110,200
+      124,230
+      194,160
+      208,190
+      278,120
+      292,150
+      362,80
+      376,110
+      446,40
+    "
+    fill="none" stroke="#3b4656" stroke-width="2.5"
+    stroke-linejoin="round" stroke-linecap="round"/>
+
+  <!-- peak markers -->
+  <circle cx="110" cy="200" r="4" fill="#c0392b"/>
+  <circle cx="194" cy="160" r="4" fill="#c0392b"/>
+  <circle cx="278" cy="120" r="4" fill="#c0392b"/>
+  <circle cx="362" cy="80"  r="4" fill="#c0392b"/>
+  <circle cx="446" cy="40"  r="5" fill="#1e8f4e"/>
+
+  <!-- labels at each peak -->
+  <text x="110" y="190" text-anchor="middle" font-size="13" fill="#c0392b">fail</text>
+  <text x="194" y="150" text-anchor="middle" font-size="13" fill="#c0392b">fail</text>
+  <text x="278" y="110" text-anchor="middle" font-size="13" fill="#c0392b">fail</text>
+  <text x="362" y="70"  text-anchor="middle" font-size="13" fill="#c0392b">fail</text>
+  <text x="446" y="28"  text-anchor="middle" font-size="13" font-weight="bold" fill="#1e8f4e">succeed</text>
+</svg>

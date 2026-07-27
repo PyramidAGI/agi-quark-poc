@@ -1,0 +1,146 @@
+{
+  "name": "horticulture-cobot-helpdesk",
+  "goal": "solve problem plant vitality reward organization",
+  "sensor": "event problem data plant machine emo",
+  "actuator": "channel data tool machine fix support",
+  "control": "val pref normal conflict",
+  "plan": "sequence fork pattern solve waitfor event",
+  "navigate": "channel fork group organization",
+  "children": [
+    {
+      "name": "request-intake",
+      "goal": "data problem stat clear bond",
+      "sensor": "channel event data emo",
+      "actuator": "container data bond group",
+      "control": "val conflict fix stat clear",
+      "plan": "sequence data pattern group",
+      "navigate": "channel fork group kinship",
+      "children": [
+        {
+          "name": "customer-context",
+          "goal": "bond data plant machine loc",
+          "sensor": "transaction contract data kinship",
+          "actuator": "container group data bond",
+          "control": "val own conflict fix",
+          "plan": "compress data pattern group",
+          "navigate": "loc organization kinship",
+          "children": []
+        },
+        {
+          "name": "urgency-triage",
+          "goal": "pref problem stat clear",
+          "sensor": "event emo vitality conflict stat high",
+          "actuator": "pref group mode fork",
+          "control": "val normal dominate",
+          "plan": "sequence problem reward",
+          "navigate": "fork channel group",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "diagnosis",
+      "goal": "pattern problem solve stat clear",
+      "sensor": "data pattern event plant machine",
+      "actuator": "pattern group data mode",
+      "control": "val conflict normal fix",
+      "plan": "expand data pattern solve",
+      "navigate": "fork group kinship",
+      "children": [
+        {
+          "name": "plant-health-diagnosis",
+          "goal": "fix plant vitality normal",
+          "sensor": "transducer radiation pattern plant vitality stat broken stat hot stat dry stat liquid",
+          "actuator": "data pattern shield fix",
+          "control": "val conflict normal",
+          "plan": "pattern problem solve sequence",
+          "navigate": "group kinship nature",
+          "children": []
+        },
+        {
+          "name": "equipment-diagnosis",
+          "goal": "fix machine stat broken normal",
+          "sensor": "transducer data machine energy force stat hot stat low stat broken",
+          "actuator": "mode tool fix shield",
+          "control": "val conflict normal",
+          "plan": "pattern problem solve sequence",
+          "navigate": "group kinship machine",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "assisted-resolution",
+      "goal": "solve problem support reward",
+      "sensor": "problem pattern pref loc",
+      "actuator": "channel tool machine fix support",
+      "control": "val normal shield",
+      "plan": "fork mode sequence activity",
+      "navigate": "channel loc group",
+      "children": [
+        {
+          "name": "knowledge-guidance",
+          "goal": "data stat clear reward",
+          "sensor": "problem pattern data pref",
+          "actuator": "channel data sequence tool",
+          "control": "val normal stat clear",
+          "plan": "compress data pattern sequence",
+          "navigate": "channel group organization",
+          "children": []
+        },
+        {
+          "name": "cobot-field-assistance",
+          "goal": "support plant vitality machine normal",
+          "sensor": "transducer loc force plant machine stat rough stat heavy stat broken",
+          "actuator": "machine transport tool force fix shield",
+          "control": "val mode shield stat low stat slow",
+          "plan": "sequence activity waitfor event",
+          "navigate": "loc channel bond",
+          "children": [
+            {
+              "name": "safe-human-handoff",
+              "goal": "bond support shield normal",
+              "sensor": "transducer emo force conflict event",
+              "actuator": "waitfor mode channel shield",
+              "control": "val pref stat slow stat low",
+              "plan": "waitfor event sequence bond",
+              "navigate": "channel loc group",
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "escalation-and-learning",
+      "goal": "organization pattern solve reward",
+      "sensor": "problem conflict waitfor event data",
+      "actuator": "fork group data pattern fix",
+      "control": "val pref dominate normal",
+      "plan": "sequence channel group solve",
+      "navigate": "fork organization kinship",
+      "children": [
+        {
+          "name": "expert-escalation",
+          "goal": "solve problem bond stat clear",
+          "sensor": "conflict problem waitfor event emo",
+          "actuator": "channel group bond data",
+          "control": "pref dominate val",
+          "plan": "fork group waitfor event",
+          "navigate": "organization kinship channel",
+          "children": []
+        },
+        {
+          "name": "case-learning",
+          "goal": "pattern data organization reward",
+          "sensor": "event data solve problem",
+          "actuator": "compress data pattern container",
+          "control": "val conflict fix normal",
+          "plan": "sequence data pattern group",
+          "navigate": "organization kinship group",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

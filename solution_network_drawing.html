@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Solution Network Drawing</title>
+<style>
+  :root {
+    --paper: #f4f6f8;
+    --plate: #fbfcfd;
+    --ink: #22303d;
+    --line: #4a5d70;
+    --faint: #94a5b5;
+    --grid: rgba(74, 93, 112, 0.10);
+    --accent: #d9531e;
+    --accent-soft: rgba(217, 83, 30, 0.14);
+    --edge: #ccd5dd;
+    --c-onto: #2a78d6;
+    --c-tri: #008300;
+    --c-log: #e87ba4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0f151b;
+      --plate: #151d25;
+      --ink: #dde5ec;
+      --line: #9db0c2;
+      --faint: #6c7f91;
+      --grid: rgba(157, 176, 194, 0.10);
+      --accent: #ff7a45;
+      --accent-soft: rgba(255, 122, 69, 0.16);
+      --edge: #2b3946;
+      --c-onto: #3987e5;
+      --c-tri: #008300;
+      --c-log: #d55181;
+    }
+  }
+  :root[data-theme="light"] {
+    --paper: #f4f6f8;
+    --plate: #fbfcfd;
+    --ink: #22303d;
+    --line: #4a5d70;
+    --faint: #94a5b5;
+    --grid: rgba(74, 93, 112, 0.10);
+    --accent: #d9531e;
+    --accent-soft: rgba(217, 83, 30, 0.14);
+    --edge: #ccd5dd;
+    --c-onto: #2a78d6;
+    --c-tri: #008300;
+    --c-log: #e87ba4;
+  }
+  :root[data-theme="dark"] {
+    --paper: #0f151b;
+    --plate: #151d25;
+    --ink: #dde5ec;
+    --line: #9db0c2;
+    --faint: #6c7f91;
+    --grid: rgba(157, 176, 194, 0.10);
+    --accent: #ff7a45;
+    --accent-soft: rgba(255, 122, 69, 0.16);
+    --edge: #2b3946;
+    --c-onto: #3987e5;
+    --c-tri: #008300;
+    --c-log: #d55181;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+  }
+  .sheet {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 40px 24px 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  header .eyebrow {
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  header h1 {
+    margin: 6px 0 0;
+    font-size: 1.5rem;
+    font-weight: 650;
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+  }
+  header p {
+    margin: 4px 0 0;
+    color: var(--faint);
+    font-size: 0.92rem;
+    max-width: 62ch;
+  }
+
+  .plate {
+    background: var(--plate);
+    border: 1px solid var(--edge);
+    border-radius: 4px;
+    padding: 10px;
+    overflow-x: auto;
+  }
+  .plate svg { display: block; width: 100%; height: auto; min-width: 560px; }
+
+  .legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 8px 24px;
+    padding: 4px 2px;
+  }
+  .legend .part {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 0.9rem;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--edge);
+  }
+  .legend .swatch {
+    flex: 0 0 12px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1.4px solid var(--ink);
+    align-self: center;
+  }
+  .legend .name {
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    flex: 0 0 auto;
+  }
+  .legend .desc { color: var(--faint); font-size: 0.82rem; }
+
+  .titleblock {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 28px;
+    justify-content: space-between;
+    border-top: 2px solid var(--line);
+    padding-top: 8px;
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .titleblock strong { color: var(--ink); font-weight: 600; }
+</style>
+
+<div class="sheet">
+  <header>
+    <div class="eyebrow">Technical illustration &middot; Dwg 004-A</div>
+    <h1>Solution Network &mdash; Onto-Drawing / Triangle Tree / log.csv</h1>
+    <p>Three columns of four nodes each, one per representation. The wiring shown is one particular solution &mdash; a specific set of links chosen out of the many that could connect these three layers.</p>
+  </header>
+
+  <div class="plate">
+    <svg viewBox="0 0 760 500" role="img" aria-label="Diagram of three columns of four dots each, labelled Onto-Drawing, Triangle Tree, and log.csv, connected by lines representing one particular solution">
+      <defs>
+        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M 20 0 L 0 0 0 20" fill="none" stroke="var(--grid)" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect x="0" y="0" width="760" height="500" fill="url(#grid)"/>
+
+      <!-- column centerlines (dash-dot, engineering convention) -->
+      <g stroke="var(--faint)" stroke-width="1" stroke-dasharray="16 5 3 5">
+        <line x1="150" y1="60" x2="150" y2="470"/>
+        <line x1="380" y1="60" x2="380" y2="470"/>
+        <line x1="610" y1="60" x2="610" y2="470"/>
+      </g>
+
+      <!-- column headers -->
+      <g font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="13" letter-spacing="1.5" text-anchor="middle">
+        <text x="150" y="48" fill="var(--ink)">ONTO-DRAWING</text>
+        <text x="380" y="48" fill="var(--ink)">TRIANGLE TREE</text>
+        <text x="610" y="48" fill="var(--ink)">LOG.CSV</text>
+      </g>
+
+      <!-- connections: solid = adjacent-column links, dashed = long-range cross-column link -->
+      <g fill="none" stroke="var(--line)" stroke-width="1.6" stroke-linecap="round">
+        <line x1="150" y1="140" x2="380" y2="230"/> <!-- O1-T2 -->
+        <line x1="150" y1="230" x2="380" y2="140"/> <!-- O2-T1 -->
+        <line x1="150" y1="230" x2="380" y2="410"/> <!-- O2-T4 -->
+        <line x1="150" y1="320" x2="380" y2="320"/> <!-- O3-T3 -->
+        <line x1="150" y1="410" x2="380" y2="410"/> <!-- O4-T4 -->
+        <line x1="380" y1="140" x2="610" y2="140"/> <!-- T1-L1 -->
+        <line x1="380" y1="230" x2="610" y2="320"/> <!-- T2-L3 -->
+        <line x1="380" y1="320" x2="610" y2="230"/> <!-- T3-L2 -->
+        <line x1="380" y1="410" x2="610" y2="410"/> <!-- T4-L4 -->
+        <line x1="380" y1="320" x2="610" y2="410"/> <!-- T3-L4 -->
+      </g>
+      <path d="M 150 140 Q 380 30 610 230" fill="none" stroke="var(--line)" stroke-width="1.4" stroke-dasharray="5 4" stroke-linecap="round"/> <!-- O1-L2 long-range -->
+
+      <!-- nodes: Onto-Drawing column -->
+      <g>
+        <circle cx="150" cy="140" r="9" fill="var(--c-onto)" stroke="var(--ink)" stroke-width="1.6"/>
+        <circle cx="150" cy="230" r="9" fill="var(--c-onto)" stroke="var(--ink)" stroke-width="1.6"/>
+        <circle cx="150" cy="320" r="9" fill="var(--c-onto)" stroke="var(--ink)" stroke-width="1.6"/>
+        <circle cx="150" cy="410" r="9" fill="var(--c-onto)" stroke="var(--ink)" stroke-width="1.6"/>
+      </g>
+      <!-- nodes: Triangle Tree column -->
+      <g>
+        <circle cx="380" cy="140" r="9" fill="var(--c-tri)" stroke="var(--ink)" stroke-width="1.6"/>
+        <circle cx="380" cy="230" r="9" fill="var(--c-tri)" stroke="var(--ink)" stroke-width="1.6"/>
+        <circle cx="380" cy="320" r="9" fill="var(--c-tri)" stroke="var(--ink)" stroke-width="1.6"/>
+        <circle cx="380" cy="410" r="9" fill="var(--c-tri)" stroke="var(--ink)" stroke-width="1.6"/>
+      </g>
+      <!-- nodes: log.csv column -->
+      <g>
+        <circle cx="610" cy="140" r="9" fill="var(--c-log)" stroke="var(--ink)" stroke-width="1.6"/>
+        <circle cx="610" cy="230" r="9" fill="var(--c-log)" stroke="var(--ink)" stroke-width="1.6"/>
+        <circle cx="610" cy="320" r="9" fill="var(--c-log)" stroke="var(--ink)" stroke-width="1.6"/>
+        <circle cx="610" cy="410" r="9" fill="var(--c-log)" stroke="var(--ink)" stroke-width="1.6"/>
+      </g>
+
+      <!-- node codes -->
+      <g font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="11.5" fill="var(--faint)">
+        <text x="128" y="124">O1</text><text x="128" y="214">O2</text><text x="128" y="304">O3</text><text x="128" y="394">O4</text>
+        <text x="392" y="124">T1</text><text x="392" y="214">T2</text><text x="392" y="304">T3</text><text x="392" y="394">T4</text>
+        <text x="626" y="124">L1</text><text x="626" y="214">L2</text><text x="626" y="304">L3</text><text x="626" y="394">L4</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="legend">
+    <div class="part"><span class="swatch" style="background: var(--c-onto)"></span><span class="name">Onto-Drawing</span><span class="desc">O1&ndash;O4, four ontology-drawing nodes</span></div>
+    <div class="part"><span class="swatch" style="background: var(--c-tri)"></span><span class="name">Triangle Tree</span><span class="desc">T1&ndash;T4, four triangle-tree nodes</span></div>
+    <div class="part"><span class="swatch" style="background: var(--c-log)"></span><span class="name">log.csv</span><span class="desc">L1&ndash;L4, four log-record nodes</span></div>
+  </div>
+
+  <div class="titleblock">
+    <span><strong>Solution network</strong> &middot; one particular wiring</span>
+    <span>Links: <strong>10 direct + 1 long-range</strong></span>
+    <span>Scale: <strong>not to scale</strong></span>
+    <span>Sheet <strong>1 / 1</strong></span>
+  </div>
+</div>
+
+</body>
+</html>

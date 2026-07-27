@@ -1,0 +1,113 @@
+{
+  "name": "curtainopener",
+  "goal": "curtain stat open stat closed val light",
+  "sensor": "",
+  "actuator": "force curtain",
+  "control": "conflict val normal",
+  "plan": "sequence event dawn dusk",
+  "navigate": "fork mode holiday waitfor event",
+  "children": [
+    {
+      "name": "housing",
+      "goal": "hold group",
+      "sensor": "",
+      "actuator": "",
+      "control": "",
+      "plan": "",
+      "navigate": "",
+      "children": [
+        {
+          "name": "motor",
+          "goal": "force move curtain",
+          "sensor": "val current stat stall",
+          "actuator": "force belt",
+          "control": "stat stall -> stop",
+          "plan": "",
+          "navigate": "",
+          "children": []
+        },
+        {
+          "name": "computer",
+          "goal": "solve problem",
+          "sensor": "data event light",
+          "actuator": "compress data pattern",
+          "control": "conflict",
+          "plan": "sequence mode holiday random",
+          "navigate": "fork mode",
+          "children": []
+        },
+        {
+          "name": "clock",
+          "goal": "data val time",
+          "sensor": "val time",
+          "actuator": "",
+          "control": "stat powercut -> hold val time",
+          "plan": "sequence time",
+          "navigate": "waitfor event",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "rail",
+      "goal": "transport carrier loc",
+      "sensor": "",
+      "actuator": "force belt",
+      "control": "",
+      "plan": "",
+      "navigate": "loc",
+      "children": [
+        {
+          "name": "carrier",
+          "goal": "hold curtain",
+          "sensor": "force",
+          "actuator": "force pull",
+          "control": "force stat heavy",
+          "plan": "",
+          "navigate": "",
+          "children": []
+        },
+        {
+          "name": "endstops",
+          "goal": "fix loc limit",
+          "sensor": "stat open stat closed",
+          "actuator": "",
+          "control": "stat limit -> stop motor",
+          "plan": "",
+          "navigate": "",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "lightsensor",
+      "goal": "data val light",
+      "sensor": "radiation val light",
+      "actuator": "",
+      "control": "val light lt dawn -> event open, val light gt dusk -> event close",
+      "plan": "pattern",
+      "navigate": "waitfor event",
+      "children": []
+    },
+    {
+      "name": "powersupply",
+      "goal": "energy stat full",
+      "sensor": "stat empty",
+      "actuator": "",
+      "control": "stat powercut -> mode battery",
+      "plan": "",
+      "navigate": "",
+      "children": []
+    },
+    {
+      "name": "remote",
+      "goal": "mode holiday",
+      "sensor": "event button",
+      "actuator": "data event mode",
+      "control": "mode manual override",
+      "plan": "",
+      "navigate": "fork mode",
+      "children": []
+    }
+  ]
+}

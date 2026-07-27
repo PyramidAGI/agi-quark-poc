@@ -1,0 +1,143 @@
+{
+  "name": "treepuller",
+  "goal": "transport tree loc truck",
+  "sensor": "",
+  "actuator": "force pull",
+  "control": "conflict val normal",
+  "plan": "sequence tree loc",
+  "navigate": "loc waitfor event",
+  "children": [
+    {
+      "name": "truck",
+      "goal": "hold group loc anchor",
+      "sensor": "force stat tilt",
+      "actuator": "",
+      "control": "stat tilt -> stop pulley",
+      "plan": "",
+      "navigate": "loc heath loc road",
+      "children": [
+        {
+          "name": "pulley",
+          "goal": "force pull cable",
+          "sensor": "val current stat stall stat hot",
+          "actuator": "force pull cable",
+          "control": "stat stall -> stop, stat hot -> stat slow",
+          "plan": "sequence speed",
+          "navigate": "waitfor event",
+          "children": []
+        },
+        {
+          "name": "battery",
+          "goal": "energy stat full",
+          "sensor": "val charge stat empty",
+          "actuator": "",
+          "control": "stat low -> stat slow",
+          "plan": "",
+          "navigate": "",
+          "children": []
+        },
+        {
+          "name": "computer",
+          "goal": "solve problem",
+          "sensor": "data event",
+          "actuator": "compress data pattern",
+          "control": "conflict",
+          "plan": "sequence",
+          "navigate": "fork",
+          "children": []
+        },
+        {
+          "name": "groundanchor",
+          "goal": "fix loc truck",
+          "sensor": "force stat slip",
+          "actuator": "force ground",
+          "control": "stat slip -> stop pulley",
+          "plan": "",
+          "navigate": "",
+          "children": []
+        },
+        {
+          "name": "loadbed",
+          "goal": "hold tree group",
+          "sensor": "stat heavy stat full",
+          "actuator": "",
+          "control": "stat full -> event done",
+          "plan": "sequence tree",
+          "navigate": "",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "sled",
+      "goal": "transport tree stat safe",
+      "sensor": "force stat heavy",
+      "actuator": "",
+      "control": "force stat heavy stat light",
+      "plan": "",
+      "navigate": "loc truck",
+      "children": [
+        {
+          "name": "runners",
+          "goal": "fix stat level",
+          "sensor": "force stat friction stat stuck",
+          "actuator": "",
+          "control": "stat stuck -> stop pulley",
+          "plan": "",
+          "navigate": "",
+          "children": []
+        },
+        {
+          "name": "bunk",
+          "goal": "hold tree group",
+          "sensor": "force stat loose",
+          "actuator": "release tree",
+          "control": "stat loose -> alert computer",
+          "plan": "",
+          "navigate": "",
+          "children": []
+        },
+        {
+          "name": "choker",
+          "goal": "hold tree",
+          "sensor": "force stat slack",
+          "actuator": "release tree",
+          "control": "stat slack -> alert computer",
+          "plan": "sequence tree",
+          "navigate": "",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "cable",
+      "goal": "transmit force pull",
+      "sensor": "force stat tension stat overload",
+      "actuator": "",
+      "control": "stat overload -> stop pulley",
+      "plan": "",
+      "navigate": "loc sled loc truck",
+      "children": []
+    },
+    {
+      "name": "camera",
+      "goal": "data pattern obstacle",
+      "sensor": "radiation pattern loc",
+      "actuator": "",
+      "control": "stat near -> alert computer",
+      "plan": "pattern",
+      "navigate": "waitfor event",
+      "children": []
+    },
+    {
+      "name": "remote",
+      "goal": "mode manual",
+      "sensor": "event button",
+      "actuator": "data event mode",
+      "control": "mode manual override",
+      "plan": "",
+      "navigate": "fork mode",
+      "children": []
+    }
+  ]
+}

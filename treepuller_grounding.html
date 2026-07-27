@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>Tree Puller Grounding Rules</title>
+<style>
+  :root {
+    --paper: #f4f6f8;
+    --plate: #fbfcfd;
+    --ink: #22303d;
+    --line: #4a5d70;
+    --faint: #94a5b5;
+    --grid: rgba(74, 93, 112, 0.10);
+    --accent: #d9531e;
+    --accent-soft: rgba(217, 83, 30, 0.14);
+    --edge: #ccd5dd;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0f151b;
+      --plate: #151d25;
+      --ink: #dde5ec;
+      --line: #9db0c2;
+      --faint: #6c7f91;
+      --grid: rgba(157, 176, 194, 0.10);
+      --accent: #ff7a45;
+      --accent-soft: rgba(255, 122, 69, 0.16);
+      --edge: #2b3946;
+    }
+  }
+  :root[data-theme="light"] {
+    --paper: #f4f6f8;
+    --plate: #fbfcfd;
+    --ink: #22303d;
+    --line: #4a5d70;
+    --faint: #94a5b5;
+    --grid: rgba(74, 93, 112, 0.10);
+    --accent: #d9531e;
+    --accent-soft: rgba(217, 83, 30, 0.14);
+    --edge: #ccd5dd;
+  }
+  :root[data-theme="dark"] {
+    --paper: #0f151b;
+    --plate: #151d25;
+    --ink: #dde5ec;
+    --line: #9db0c2;
+    --faint: #6c7f91;
+    --grid: rgba(157, 176, 194, 0.10);
+    --accent: #ff7a45;
+    --accent-soft: rgba(255, 122, 69, 0.16);
+    --edge: #2b3946;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+  }
+  .sheet {
+    max-width: 1020px;
+    margin: 0 auto;
+    padding: 40px 24px 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  header .eyebrow {
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  header h1 {
+    margin: 6px 0 0;
+    font-size: 1.6rem;
+    font-weight: 650;
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+  }
+  header p {
+    margin: 4px 0 0;
+    color: var(--faint);
+    font-size: 0.92rem;
+    max-width: 66ch;
+  }
+
+  .plate {
+    background: var(--plate);
+    border: 1px solid var(--edge);
+    border-radius: 4px;
+    padding: 4px 10px 10px;
+    overflow-x: auto;
+  }
+
+  table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 0.86rem; }
+  thead th {
+    text-align: left;
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--faint);
+    font-weight: 600;
+    padding: 12px 10px 8px;
+    border-bottom: 2px solid var(--line);
+    white-space: nowrap;
+  }
+  tbody td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--edge);
+    vertical-align: baseline;
+  }
+  tbody tr.group td {
+    border-bottom: 1px solid var(--line);
+    padding-top: 18px;
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  tbody tr.group .ref { color: var(--faint); }
+  .mono { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 0.8rem; }
+  .num  { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 0.8rem; text-align: right; white-space: nowrap; }
+  .ref  { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 0.75rem; color: var(--accent); width: 2.6em; }
+  .op   { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 0.75rem; color: var(--faint); text-transform: uppercase; }
+  .quark {
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: 0.78rem;
+    background: var(--accent-soft);
+    color: var(--ink);
+    padding: 1px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .sentence { color: var(--ink); }
+  .reaction { color: var(--faint); font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 0.75rem; white-space: nowrap; }
+  .unit { color: var(--faint); }
+
+  .note {
+    font-size: 0.86rem;
+    color: var(--faint);
+    border-left: 2px solid var(--accent);
+    padding: 2px 0 2px 12px;
+    max-width: 78ch;
+  }
+  .note strong { color: var(--ink); font-weight: 600; }
+
+  details.raw { border: 1px solid var(--edge); border-radius: 4px; background: var(--plate); }
+  details.raw summary {
+    cursor: pointer;
+    padding: 10px 12px;
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  details.raw pre {
+    margin: 0;
+    padding: 0 12px 12px;
+    overflow-x: auto;
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: 0.74rem;
+    line-height: 1.7;
+    color: var(--ink);
+  }
+
+  .titleblock {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 28px;
+    justify-content: space-between;
+    border-top: 2px solid var(--line);
+    padding-top: 8px;
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .titleblock strong { color: var(--ink); font-weight: 600; }
+</style>
+
+<div class="sheet">
+  <header>
+    <div class="eyebrow">Data sheet &middot; Dwg 003-B</div>
+    <h1>Heath Tree Extraction Rig &mdash; Grounding Rules</h1>
+    <p>The 18 <span class="mono">i;lt</span> / <span class="mono">i;gt</span> records added to <span class="mono">log.csv</span> (lines 145&ndash;162) for <span class="mono">treepuller.json</span>. Each row turns one measured channel into one quark; the tree then reacts to the quark alone. Ref numbers match the balloon callouts on Dwg 003-A.</p>
+  </header>
+
+  <div class="note">
+    <strong>Where the numbers live.</strong> Units and real numbers appear only here &mdash; the world model says <span class="mono">stat overload &rarr; stop pulley</span>, this sheet says 25&nbsp;kN <em>is</em> overload. Recalibrating the rig means editing this table, never the tree.
+  </div>
+
+  <div class="plate">
+    <table>
+      <thead>
+        <tr>
+          <th>Ref</th>
+          <th>Reads as</th>
+          <th>Channel</th>
+          <th>Unit</th>
+          <th>Fires</th>
+          <th>Threshold</th>
+          <th>Default</th>
+          <th>Quark</th>
+          <th>Consumed by</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="group"><td class="ref">2</td><td colspan="8">Pulley &mdash; electric winch</td></tr>
+        <tr>
+          <td class="ref"></td>
+          <td class="sentence">winch pulling hard</td>
+          <td class="mono">winch_current_a</td><td class="unit">A</td>
+          <td class="op">gt</td><td class="num">120</td><td class="num">30</td>
+          <td><span class="quark">stat heavy</span></td>
+          <td class="reaction">pulley &middot; val current</td>
+        </tr>
+        <tr>
+          <td class="ref"></td>
+          <td class="sentence">winch motor overheating</td>
+          <td class="mono">winch_temp_c</td><td class="unit">&deg;C</td>
+          <td class="op">gt</td><td class="num">80</td><td class="num">35</td>
+          <td><span class="quark">stat hot</span></td>
+          <td class="reaction">stat hot &rarr; stat slow</td>
+        </tr>
+        <tr>
+          <td class="ref"></td>
+          <td class="sentence">winch drum no longer turning</td>
+          <td class="mono">winch_speed_mps</td><td class="unit">m/s</td>
+          <td class="op">lt</td><td class="num">0.05</td><td class="num">0.4</td>
+          <td><span class="quark">stat stall</span></td>
+          <td class="reaction">stat stall &rarr; stop</td>
+        </tr>
+
+        <tr class="group"><td class="ref">11</td><td colspan="8">Cable &mdash; main line</td></tr>
+        <tr>
+          <td class="ref"></td>
+          <td class="sentence">cable gone slack</td>
+          <td class="mono">cable_tension_kn</td><td class="unit">kN</td>
+          <td class="op">lt</td><td class="num">0.5</td><td class="num">8</td>
+          <td><span class="quark">stat empty</span></td>
+          <td class="reaction">cable &middot; force stat tension</td>
+        </tr>
+        <tr>
+          <td class="ref"></td>
+          <td class="sentence">cable under heavy load</td>
+          <td class="mono">cable_tension_kn</td><td class="unit">kN</td>
+          <td class="op">gt</td><td class="num">18</td><td class="num">8</td>
+          <td><span class="quark">stat heavy</span></td>
+          <td class="reaction">cable &middot; force stat tension</td>
+        </tr>
+        <tr>
+          <td class="ref"></td>
+          <td class="sentence">cable tension beyond safe working load</td>
+          <td class="mono">cable_tension_kn</td><td class="unit">kN</td>
+          <td class="op">gt</td><td class="num">25</td><td class="num">8</td>
+          <td><span class="quark">stat overload</span></td>
+          <td class="reaction">stat overload &rarr; stop pulley</td>
+        </tr>
+
+        <tr class="group"><td class="ref">1</td><td colspan="8">Truck &mdash; anchor mass</td></tr>
+        <tr>
+          <td class="ref"></td>
+          <td class="sentence">truck tipping on soft ground</td>
+          <td class="mono">truck_tilt_deg</td><td class="unit">deg</td>
+          <td class="op">gt</td><td class="num">8</td><td class="num">1</td>
+          <td><span class="quark">stat tilt</span></td>
+          <td class="reaction">stat tilt &rarr; stop pulley</td>
+        </tr>
+
+        <tr class="group"><td class="ref">5</td><td colspan="8">Ground anchor</td></tr>
+        <tr>
+          <td class="ref"></td>
+          <td class="sentence">ground anchor dragging</td>
+          <td class="mono">anchor_slip_mm</td><td class="unit">mm</td>
+          <td class="op">gt</td><td class="num">50</td><td class="num">0</td>
+          <td><span class="quark">stat slip</span></td>
+          <td class="reaction">stat slip &rarr; stop pulley</td>
+        </tr>
+
+        <tr class="group"><td class="ref">6</td><td colspan="8">Load bed</td></tr>
+        <tr>
+          <td class="ref"></td>
+          <td class="sentence">truck bed loaded to capacity</td>
+          <td class="mono">bed_load_kg</td><td class="unit">kg</td>
+          <td class="op">gt</td><td class="num">3500</td><td class="num">1500</td>
+          <td><span class="quark">stat full</span></td>
+          <td class="reaction">stat full &rarr; event done</td>
+        </tr>
+
+        <tr class="group"><td class="ref">7</td><td colspan="8">Sled &mdash; aluminium boat</td></tr>
+        <tr>
+          <td class="ref"></td>
+          <td class="sentence">sled carrying a heavy hitch</td>
+          <td class="mono">sled_load_kg</td><td class="unit">kg</td>
+          <td class="op">gt</td><td class="num">900</td><td class="num">400</td>
+          <td><span class="quark">stat heavy</span></td>
+          <td class="reaction">sled &middot; force stat heavy</td>
+        </tr>
+        <tr>
+          <td class="ref"></td>
+          <td class="sentence">sled riding over on a slope</td>
+          <td class="mono">sled_tilt_deg</td><td class="unit">deg</td>
+          <td class="op">gt</td><td class="num">20</td><td class="num">2</td>
+          <td><span class="quark">stat tilt</span></td>
+          <td class="reaction">sled &middot; goal stat safe</td>
+        </tr>
+
+        <tr class="group"><td class="ref">8</td><td colspan="8">Runners &mdash; skids</td></tr>
+        <tr>
+          <td class="ref"></td>
+          <td class="sentence">sled no longer moving while cable pulls</td>
+          <td class="mono">sled_speed_mps</td><td class="unit">m/s</td>
+          <td class="op">lt</td><td class="num">0.05</td><td class="num">0.4</td>
+          <td><span class="quark">stat stuck</span></td>
+          <td class="reaction">stat stuck &rarr; stop pulley</td>
+        </tr>
+        <tr>
+          <td class="ref"></td>
+          <td class="sentence">runners ploughing into the heath</td>
+          <td class="mono">drag_force_n</td><td class="unit">N</td>
+          <td class="op">gt</td><td class="num">3000</td><td class="num">1200</td>
+          <td><span class="quark">stat friction</span></td>
+          <td class="reaction">runners &middot; sensor force</td>
+        </tr>
+        <tr>
+          <td class="ref"></td>
+          <td class="sentence">peat too soft, runners sinking</td>
+          <td class="mono">ground_firmness</td><td class="unit">0&ndash;1</td>
+          <td class="op">lt</td><td class="num">0.3</td><td class="num">0.7</td>
+          <td><span class="quark">stat soft</span></td>
+          <td class="reaction">terrain, feeds stat stuck</td>
+        </tr>
+
+        <tr class="group"><td class="ref">9</td><td colspan="8">Bunk &mdash; bolsters and stakes</td></tr>
+        <tr>
+          <td class="ref"></td>
+          <td class="sentence">bunk straps losing grip on the load</td>
+          <td class="mono">strap_tension_n</td><td class="unit">N</td>
+          <td class="op">lt</td><td class="num">150</td><td class="num">600</td>
+          <td><span class="quark">stat loose</span></td>
+          <td class="reaction">stat loose &rarr; alert computer</td>
+        </tr>
+
+        <tr class="group"><td class="ref">10</td><td colspan="8">Choker &mdash; binding chain</td></tr>
+        <tr>
+          <td class="ref"></td>
+          <td class="sentence">choker slipping off a stem</td>
+          <td class="mono">choker_tension_n</td><td class="unit">N</td>
+          <td class="op">lt</td><td class="num">100</td><td class="num">800</td>
+          <td><span class="quark">stat slack</span></td>
+          <td class="reaction">stat slack &rarr; alert computer</td>
+        </tr>
+
+        <tr class="group"><td class="ref">12</td><td colspan="8">Camera &mdash; haul path</td></tr>
+        <tr>
+          <td class="ref"></td>
+          <td class="sentence">obstacle close on the haul path</td>
+          <td class="mono">obstacle_dist_m</td><td class="unit">m</td>
+          <td class="op">lt</td><td class="num">3</td><td class="num">15</td>
+          <td><span class="quark">stat near</span></td>
+          <td class="reaction">stat near &rarr; alert computer</td>
+        </tr>
+
+        <tr class="group"><td class="ref">13</td><td colspan="8">Remote &mdash; operator handheld</td></tr>
+        <tr>
+          <td class="ref"></td>
+          <td class="sentence">operator pressed the remote</td>
+          <td class="mono">remote_button</td><td class="unit">0/1</td>
+          <td class="op">gt</td><td class="num">0.5</td><td class="num">0</td>
+          <td><span class="quark">event</span></td>
+          <td class="reaction">mode manual override</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="note">
+    <strong>Not repeated here.</strong> The winch battery reuses the existing <span class="mono">battery_%</span> rules already in the pool (<span class="mono">stat low</span> / <span class="mono">stat empty</span> / <span class="mono">stat full</span>, log.csv lines 119&ndash;121). Thresholds are plausible placeholders for a small-truck electric winch (~25&nbsp;kN line, ~1&ndash;3&nbsp;t hitch) and need calibration against real hardware.
+  </div>
+
+  <details class="raw">
+    <summary>Raw records &middot; log.csv lines 145&ndash;162</summary>
+<pre>winch pulling hard;i;gt;winch_current_a;A;stat heavy;30;120;
+winch motor overheating;i;gt;winch_temp_c;C;stat hot;35;80;
+winch drum no longer turning;i;lt;winch_speed_mps;m/s;stat stall;0.4;0.05;
+cable gone slack;i;lt;cable_tension_kn;kN;stat empty;8;0.5;
+cable under heavy load;i;gt;cable_tension_kn;kN;stat heavy;8;18;
+cable tension beyond safe working load;i;gt;cable_tension_kn;kN;stat overload;8;25;
+truck tipping on soft ground;i;gt;truck_tilt_deg;deg;stat tilt;1;8;
+ground anchor dragging;i;gt;anchor_slip_mm;mm;stat slip;0;50;
+truck bed loaded to capacity;i;gt;bed_load_kg;kg;stat full;1500;3500;
+sled carrying a heavy hitch;i;gt;sled_load_kg;kg;stat heavy;400;900;
+sled no longer moving while cable pulls;i;lt;sled_speed_mps;m/s;stat stuck;0.4;0.05;
+runners ploughing into the heath;i;gt;drag_force_n;N;stat friction;1200;3000;
+sled riding over on a slope;i;gt;sled_tilt_deg;deg;stat tilt;2;20;
+peat too soft, runners sinking;i;lt;ground_firmness;0-1;stat soft;0.7;0.3;
+bunk straps losing grip on the load;i;lt;strap_tension_n;N;stat loose;600;150;
+choker slipping off a stem;i;lt;choker_tension_n;N;stat slack;800;100;
+obstacle close on the haul path;i;lt;obstacle_dist_m;m;stat near;15;3;
+operator pressed the remote;i;gt;remote_button;0/1;event;0;0.5;</pre>
+  </details>
+
+  <div class="note">
+    <strong>Record format.</strong> <span class="mono">sentence ; e0 role ; e1 operator ; e2 channel ; e3 unit ; e4 quark ; e5 default reading ; e6 threshold</span>
+  </div>
+
+  <div class="titleblock">
+    <span><strong>Tree puller</strong> &middot; grounding rules</span>
+    <span>Source: <strong>log.csv 145&ndash;162</strong></span>
+    <span>Records: <strong>18</strong></span>
+    <span>Sheet <strong>1 / 1</strong></span>
+  </div>
+</div>
+
+</body>
+</html>

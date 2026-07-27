@@ -15,12 +15,66 @@
     }
     h1 { font-size: 1.6rem; }
     a { color: #0b62c4; }
+    .download {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: 0.6rem 1.1rem;
+      font: inherit;
+      color: #fff;
+      background: #0b62c4;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .download:hover { background: #0950a3; }
+    h2 { font-size: 1.05rem; margin-top: 2.5rem; }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 0.95rem;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 0.6rem 0.8rem 0.6rem 0;
+      border-bottom: 1px solid #dcdfe3;
+    }
+    th { font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; color: #667; }
+    td.step { white-space: nowrap; font-weight: 600; width: 4.5rem; }
   </style>
 </head>
 <body>
   <h1>AGI Quark POC</h1>
+
+  <h2>Workflow</h2>
+  <table>
+    <thead>
+      <tr><th>Step</th><th>Prompt</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="step">Step 1</td>
+        <td>Give the 10 components for a project for building an automatic curtain opener tool. It reacts to light and opens and closes automatically when people are on holiday.<br>Make a drawing of this project including these components</td>
+      </tr>
+      <tr>
+        <td class="step">Step 2</td>
+        <td>Make a matching Triangle Tree.</td>
+      </tr>
+      <tr>
+        <td class="step">Step 3</td>
+        <td>Add the grounding rules to log.csv</td>
+      </tr>
+    </tbody>
+  </table>
+
   <ul>
     <li><a href="https://patternz.nl/triangle_viewer.html">Triangle Tree Viewer</a></li>
+    <li><a href="drone_drawing.html">Fixed-Wing Drone &mdash; Component Drawing</a></li>
+    <li><a href="curtain_opener_drawing.html">Automatic Curtain Opener &mdash; Component Drawing</a></li>
+    <li><a href="treepuller_drawing.html">Tree Puller &mdash; Component Drawing</a></li>
+    <li><a href="treepuller_grounding.html">Tree Puller &mdash; Grounding Rules</a></li>
   </ul>
+  <a class="download" href="drone.json" download="drone.json">Download drone.json</a>
 </body>
 </html>
