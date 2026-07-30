@@ -1,0 +1,10 @@
+
+
+minimize surprise == compression
+
+so the triangle sensor input should cover all possibilities so surprise is minimized
+
+but have no fear
+
+the outgoing actuator side = inverse compression: random copy, mutate and x-over
+

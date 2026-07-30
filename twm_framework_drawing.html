@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<title>TWM Framework Concept Drawing</title>
+<style>
+  :root {
+    --paper: #f4f6f8;
+    --plate: #fbfcfd;
+    --ink: #22303d;
+    --line: #4a5d70;
+    --faint: #94a5b5;
+    --grid: rgba(74, 93, 112, 0.10);
+    --accent: #d9531e;
+    --accent-soft: rgba(217, 83, 30, 0.14);
+    --edge: #ccd5dd;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #0f151b;
+      --plate: #151d25;
+      --ink: #dde5ec;
+      --line: #9db0c2;
+      --faint: #6c7f91;
+      --grid: rgba(157, 176, 194, 0.10);
+      --accent: #ff7a45;
+      --accent-soft: rgba(255, 122, 69, 0.16);
+      --edge: #2b3946;
+    }
+  }
+  :root[data-theme="light"] {
+    --paper: #f4f6f8;
+    --plate: #fbfcfd;
+    --ink: #22303d;
+    --line: #4a5d70;
+    --faint: #94a5b5;
+    --grid: rgba(74, 93, 112, 0.10);
+    --accent: #d9531e;
+    --accent-soft: rgba(217, 83, 30, 0.14);
+    --edge: #ccd5dd;
+  }
+  :root[data-theme="dark"] {
+    --paper: #0f151b;
+    --plate: #151d25;
+    --ink: #dde5ec;
+    --line: #9db0c2;
+    --faint: #6c7f91;
+    --grid: rgba(157, 176, 194, 0.10);
+    --accent: #ff7a45;
+    --accent-soft: rgba(255, 122, 69, 0.16);
+    --edge: #2b3946;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.5;
+  }
+  .sheet {
+    max-width: 1020px;
+    margin: 0 auto;
+    padding: 40px 24px 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  header .eyebrow {
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  header h1 {
+    margin: 6px 0 0;
+    font-size: 1.6rem;
+    font-weight: 650;
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+  }
+  header p {
+    margin: 4px 0 0;
+    color: var(--faint);
+    font-size: 0.92rem;
+    max-width: 64ch;
+  }
+
+  .plate {
+    background: var(--plate);
+    border: 1px solid var(--edge);
+    border-radius: 4px;
+    padding: 10px;
+    overflow-x: auto;
+  }
+  .plate svg { display: block; width: 100%; height: auto; min-width: 720px; }
+
+  .legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 8px 24px;
+    padding: 4px 2px;
+  }
+  .legend .part {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 0.9rem;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--edge);
+  }
+  .legend .num {
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: 0.78rem;
+    color: var(--accent);
+    flex: 0 0 1.2em;
+  }
+  .legend .name {
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    flex: 0 0 auto;
+  }
+  .legend .desc { color: var(--faint); font-size: 0.82rem; }
+
+  .titleblock {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 28px;
+    justify-content: space-between;
+    border-top: 2px solid var(--line);
+    padding-top: 8px;
+    font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .titleblock strong { color: var(--ink); font-weight: 600; }
+</style>
+
+<div class="sheet">
+  <header>
+    <div class="eyebrow">Technical illustration &middot; Dwg 000-A</div>
+    <h1>TWM Framework &mdash; Concept Layout</h1>
+    <p>Schematic. The triangle and its six fields, trees and tiles, the log record types, and the homeostatic loop that ties grounding to causality. Orange marks the live loop &mdash; the path a reading takes on its way back out to the world.</p>
+  </header>
+
+  <div class="plate">
+    <svg viewBox="0 0 1000 740" role="img" aria-label="Concept schematic of the TWM framework in four panels: the triangle with six fields, a tree of triangles grouped into tiles, the log record types for elements, causality and grounding, and the homeostatic control loop">
+      <defs>
+        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M 20 0 L 0 0 0 20" fill="none" stroke="var(--grid)" stroke-width="1"/>
+        </pattern>
+        <marker id="tip" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--line)"/>
+        </marker>
+        <marker id="tipa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent)"/>
+        </marker>
+      </defs>
+      <rect x="0" y="0" width="1000" height="740" fill="url(#grid)"/>
+
+      <g font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="11" letter-spacing="1.6" fill="var(--accent)">
+        <text x="32" y="68">A &middot; THE TRIANGLE &mdash; 6 FIELDS</text>
+        <text x="402" y="68">B &middot; TREE AND TILES</text>
+        <text x="32" y="382">C &middot; THE LOG &mdash; RECORD TYPES</text>
+        <text x="592" y="382">D &middot; HOMEOSTASIS</text>
+      </g>
+      <g fill="none" stroke="var(--edge)" stroke-width="1">
+        <rect x="32" y="78" width="350" height="284" rx="4"/>
+        <rect x="402" y="78" width="566" height="284" rx="4"/>
+        <rect x="32" y="392" width="540" height="320" rx="4"/>
+        <rect x="592" y="392" width="376" height="320" rx="4"/>
+      </g>
+
+      <!-- ============ A · the triangle ============ -->
+      <path d="M 207 128 L 322 290 L 92 290 Z" fill="none" stroke="var(--line)" stroke-width="2.2" stroke-linejoin="round"/>
+      <g fill="var(--plate)" stroke="var(--line)" stroke-width="1.8">
+        <circle cx="207" cy="128" r="4.5"/>
+        <circle cx="92" cy="290" r="4.5"/>
+        <circle cx="322" cy="290" r="4.5"/>
+      </g>
+      <g font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="11.5" letter-spacing="1" fill="var(--ink)" text-anchor="middle">
+        <text x="207" y="114">GOAL</text>
+        <text x="92" y="310">SENSOR</text>
+        <text x="322" y="310">ACTUATOR</text>
+      </g>
+      <g font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="11" letter-spacing="1" fill="var(--faint)">
+        <text x="207" y="278" text-anchor="middle">CONTROL</text>
+        <text x="163" y="222">PLAN</text>
+        <text x="254" y="222" text-anchor="end">NAVIGATE</text>
+      </g>
+      <!-- world in / out -->
+      <g stroke="var(--line)" stroke-width="1.4" fill="none">
+        <path d="M 52 330 L 82 300" marker-end="url(#tip)"/>
+        <path d="M 332 300 L 362 330" marker-end="url(#tip)"/>
+      </g>
+      <g font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="9.5" fill="var(--faint)" text-anchor="middle">
+        <text x="56" y="346">world in</text>
+        <text x="358" y="346">world out</text>
+      </g>
+      <text x="207" y="346" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="9.5" fill="var(--faint)" text-anchor="middle">3 anchors &middot; 3 processes = one node</text>
+
+      <!-- ============ B · tree and tiles ============ -->
+      <!-- tile boundaries -->
+      <g fill="none" stroke="var(--accent)" stroke-width="1.2" stroke-dasharray="6 5">
+        <rect x="480" y="176" width="160" height="164" rx="6"/>
+        <rect x="730" y="176" width="160" height="164" rx="6"/>
+      </g>
+      <g font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="9.5" letter-spacing="1.4" fill="var(--accent)">
+        <text x="488" y="192">TILE</text>
+        <text x="738" y="192">TILE</text>
+      </g>
+      <!-- connectors -->
+      <g stroke="var(--line)" stroke-width="1.2" fill="none">
+        <path d="M 685 144 L 560 190 M 685 144 L 685 190 M 685 144 L 810 190"/>
+        <path d="M 560 238 L 515 280 M 560 238 L 605 280"/>
+        <path d="M 810 238 L 765 280 M 810 238 L 855 280"/>
+      </g>
+      <!-- triangles -->
+      <g fill="var(--plate)" stroke="var(--line)" stroke-width="1.8" stroke-linejoin="round">
+        <path d="M 685 96 L 715 144 L 655 144 Z"/>
+        <path d="M 560 190 L 586 238 L 534 238 Z"/>
+        <path d="M 685 190 L 711 238 L 659 238 Z"/>
+        <path d="M 810 190 L 836 238 L 784 238 Z"/>
+        <path d="M 515 280 L 535 320 L 495 320 Z"/>
+        <path d="M 605 280 L 625 320 L 585 320 Z"/>
+        <path d="M 765 280 L 785 320 L 745 320 Z"/>
+        <path d="M 855 280 L 875 320 L 835 320 Z"/>
+      </g>
+      <g font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="9.5" fill="var(--faint)" text-anchor="middle">
+        <text x="685" y="88">root</text>
+        <text x="452" y="214">assemblies</text>
+        <text x="452" y="300">components</text>
+        <text x="685" y="352">every node is a triangle &middot; tiles compose into a larger model</text>
+      </g>
+
+      <!-- ============ C · the log ============ -->
+      <g font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="8.5">
+        <!-- header -->
+        <g fill="var(--faint)" letter-spacing="0.6">
+          <text x="48" y="426">sentence</text>
+          <text x="210" y="426">e0</text><text x="248" y="426">e1</text>
+          <text x="286" y="426">e2</text><text x="324" y="426">e3</text>
+          <text x="362" y="426">e4</text><text x="400" y="426">e5</text>
+          <text x="438" y="426">e6</text>
+        </g>
+        <line x1="44" y1="432" x2="476" y2="432" stroke="var(--line)" stroke-width="1.4"/>
+        <!-- rows -->
+        <g fill="var(--ink)">
+          <text x="48" y="450">battery getting low</text>
+          <text x="210" y="450">a</text><text x="248" y="450">stat</text>
+          <text x="286" y="450">robot001</text><text x="324" y="450">bat001</text>
+          <text x="362" y="450">stat low</text><text x="400" y="450">25</text><text x="438" y="450">30</text>
+
+          <text x="210" y="472">c</text><text x="248" y="472">mode</text>
+          <text x="286" y="472">robot001</text><text x="324" y="472">bat001</text>
+          <text x="362" y="472">recharge</text><text x="400" y="472">35</text><text x="438" y="472">45</text>
+
+          <text x="48" y="500">recharge restores energy</text>
+          <text x="210" y="500">c</text><text x="248" y="500">effect</text>
+          <text x="286" y="500">recharge</text><text x="324" y="500">robot001</text>
+          <text x="362" y="500">energy</text><text x="400" y="500">0</text><text x="438" y="500">0</text>
+
+          <text x="48" y="528">battery running low</text>
+          <text x="210" y="528">i</text><text x="248" y="528">lt</text>
+          <text x="286" y="528">battery_%</text><text x="324" y="528">%</text>
+          <text x="362" y="528">stat low</text><text x="400" y="528">75</text><text x="438" y="528">30</text>
+        </g>
+        <g stroke="var(--edge)" stroke-width="1">
+          <line x1="44" y1="480" x2="476" y2="480"/>
+          <line x1="44" y1="508" x2="476" y2="508"/>
+          <line x1="44" y1="536" x2="476" y2="536"/>
+        </g>
+        <!-- row-type brackets -->
+        <g stroke="var(--accent)" stroke-width="1.4" fill="none">
+          <path d="M 486 438 L 492 438 L 492 476 L 486 476"/>
+          <path d="M 486 488 L 492 488 L 492 504 L 486 504"/>
+          <path d="M 486 516 L 492 516 L 492 532 L 486 532"/>
+        </g>
+        <g fill="var(--accent)" letter-spacing="1">
+          <text x="498" y="452">ELEMENT</text>
+          <text x="498" y="466">+ ACTION</text>
+          <text x="498" y="500">CAUSALITY</text>
+          <text x="498" y="528">GROUNDING</text>
+        </g>
+      </g>
+      <!-- field key + notes -->
+      <g font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="8.5" fill="var(--faint)">
+        <text x="44" y="562">e0 role &middot; e1 operator &middot; e2 concept1 &middot; e3 concept2 &middot; e4 quark or action &middot; e5 val &middot; e6 threshold</text>
+      </g>
+      <g font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="9.5" fill="var(--ink)">
+        <rect x="44" y="586" width="7" height="7" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1"/>
+        <text x="60" y="594">a;stat + c;mode &mdash; an element, and the action taken on it</text>
+        <rect x="44" y="614" width="7" height="7" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1"/>
+        <text x="60" y="622">c;effect &mdash; what the action does to the world: causality</text>
+        <rect x="44" y="642" width="7" height="7" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1"/>
+        <text x="60" y="650">i;lt / i;gt &mdash; channel + unit + threshold &rarr; quark: grounding</text>
+      </g>
+      <text x="44" y="682" font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="8.5" fill="var(--faint)">units and real numbers appear in grounding rows only &mdash; everywhere else the model speaks in quarks</text>
+
+      <!-- ============ D · homeostasis ============ -->
+      <g fill="var(--plate)" stroke="var(--line)" stroke-width="1.8">
+        <rect x="606" y="424" width="110" height="32" rx="3"/>
+        <rect x="846" y="424" width="110" height="32" rx="3"/>
+        <rect x="846" y="624" width="110" height="32" rx="3"/>
+        <rect x="606" y="624" width="110" height="32" rx="3"/>
+      </g>
+      <g font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="10" letter-spacing="1" fill="var(--ink)" text-anchor="middle">
+        <text x="661" y="444">WORLD</text>
+        <text x="901" y="444">GROUNDING</text>
+        <text x="901" y="644">CONTROL</text>
+        <text x="661" y="644">ACTUATOR</text>
+      </g>
+      <g stroke="var(--accent)" stroke-width="2" fill="none">
+        <path d="M 720 440 L 840 440" marker-end="url(#tipa)"/>
+        <path d="M 901 460 L 901 618" marker-end="url(#tipa)"/>
+        <path d="M 842 640 L 722 640" marker-end="url(#tipa)"/>
+        <path d="M 661 620 L 661 462" marker-end="url(#tipa)"/>
+      </g>
+      <g font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="9" fill="var(--faint)">
+        <text x="780" y="432" text-anchor="middle">measure</text>
+        <text x="909" y="542">quark</text>
+        <text x="782" y="632" text-anchor="middle">effect &middot; causality</text>
+        <text x="653" y="542" text-anchor="end">act</text>
+      </g>
+      <!-- normal band + deviation -->
+      <rect x="706" y="516" width="150" height="34" fill="var(--accent-soft)"/>
+      <g stroke="var(--accent)" stroke-width="1.2" stroke-dasharray="5 4">
+        <line x1="706" y1="516" x2="856" y2="516"/>
+        <line x1="706" y1="550" x2="856" y2="550"/>
+      </g>
+      <path d="M 706 542 C 730 542, 736 494, 781 494 S 832 542, 856 540" fill="none" stroke="var(--ink)" stroke-width="1.8"/>
+      <circle cx="781" cy="494" r="3.2" fill="var(--accent)"/>
+      <g font-family="ui-monospace, 'Cascadia Mono', Consolas, monospace" font-size="9" fill="var(--faint)" text-anchor="middle">
+        <text x="781" y="486">deviation</text>
+        <text x="781" y="510">val normal</text>
+        <text x="781" y="576">the loop returns val to the band</text>
+        <text x="781" y="592">that return is homeostasis</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="legend">
+    <div class="part"><span class="num">A</span><span class="name">Triangle</span><span class="desc">3 anchors (goal, sensor, actuator) joined by 3 processes (control, plan, navigate)</span></div>
+    <div class="part"><span class="num">B</span><span class="name">Tree &amp; tiles</span><span class="desc">nodes are triangles; a subtree lifts out as a tile and composes into a larger model</span></div>
+    <div class="part"><span class="num">C</span><span class="name">Log</span><span class="desc">elements and actions, causality (<span style="font-family:ui-monospace,monospace">c;effect</span>), grounding (<span style="font-family:ui-monospace,monospace">i;lt/gt</span>)</span></div>
+    <div class="part"><span class="num">D</span><span class="name">Homeostasis</span><span class="desc">measure &rarr; quark &rarr; control rule &rarr; act &rarr; world; deviation returns to the normal band</span></div>
+  </div>
+
+  <div class="titleblock">
+    <span><strong>TWM framework</strong> &middot; concept layout</span>
+    <span>View: <strong>schematic</strong></span>
+    <span>Scale: <strong>not to scale</strong></span>
+    <span>Sheet <strong>1 / 1</strong></span>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,119 @@
+THE TRIANGLE
+============
+
+The unit of a Triangle Tree. One triangle = one node = one component.
+
+
+THREE CORNERS
+-------------
+
+        G           G = Goal      what this node is for
+       / \          S = Sensor    what comes in from the world
+      S---A         A = Actuator  what goes out to the world
+
+
+SIX FIELDS
+----------
+
+Every triangle holds six fields: the three corners, and three
+behaviours that run between them.
+
+              G  goal
+             / \
+            /   \
+     plan  /     \  navigate
+          /       \
+         S---------A
+      sensor   |    actuator
+             control
+
+    goal       the target state, written in quarks
+    sensor     the channels this node reads
+    actuator   the forces or data this node puts out
+    control    reflex: sensor -> actuator, without deliberation
+    plan       sequencing toward the goal
+    navigate   choosing a mode, a branch, a place to be
+
+The corner mapping is canonical. Putting control/plan/navigate on
+the edges is a reading, not a rule -- it is just where each one sits
+between the corners it connects.
+
+
+FILLED IN
+---------
+
+From drone.json, the radar node:
+
+    name       radar
+    goal       data pattern obstacle
+    sensor     radiation pattern loc
+    actuator   -
+    control    stat near -> alert computer
+    plan       pattern
+    navigate   waitfor event
+
+
+FIRING
+------
+
+A control field with '->' is a rule. Left of the arrow is a quark
+condition, right of it an action:
+
+    stat near      -> alert computer
+    stat stall     -> stop
+    stat overload  -> stop pulley
+
+A control field without '->' is not a rule but a declaration of the
+quarks this node's control domain works in:
+
+    conflict val normal
+
+The quarks on the left never carry units or numbers. Those live in
+the grounding rules in log.csv, which turn a measured channel into a
+quark:
+
+    cable tension beyond safe working load
+        i;gt;cable_tension_kn;kN;stat overload;8;25;
+
+So log.csv says 25 kN is overload; the triangle says overload means
+stop. Recalibrate the machine without touching the model.
+
+
+HOMEOSTASIS
+-----------
+
+A triangle does not run once. It runs continually, closing the gap
+between goal and actual:
+
+    world --measure--> grounding --quark--> control
+      ^                                        |
+      |                                        act
+      +---------------- effect ----------------+
+
+While the reading sits inside the normal band, nothing fires. A
+deviation fires a rule, the action pushes back, the reading returns
+to the band. That return is homeostasis.
+
+
+TREES AND TILES
+---------------
+
+Triangles compose. A parent's children elaborate it -- the root is
+the whole system, its children are assemblies, their children are
+components:
+
+                    /\
+                   /  \  root
+                  /____\
+                 /      \
+                /        \
+              /\          /\
+             /  \        /  \   assemblies
+            /____\      /____\
+            /    \      /    \
+          /\      /\  /\      /\
+         /  \    /  \/  \    /  \  components
+        /____\  /____\____\  /____\
+
+Any subtree lifts out whole and stays valid on its own. That is a
+tile. Tiles compose into a larger model.
